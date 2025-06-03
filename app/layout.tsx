@@ -4,32 +4,32 @@ import "./globals.css";
 import { WhopThemeProvider } from "@whop-apps/sdk";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Whop App",
-  description: "My Whop App",
+	title: "Whop App",
+	description: "My Whop App",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <WhopThemeProvider>{children}</WhopThemeProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en" suppressHydrationWarning={true}>
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+			>
+				<WhopThemeProvider>{children}</WhopThemeProvider>
+			</body>
+		</html>
+	);
 }
