@@ -16,6 +16,10 @@
       "WebFetch",
       "WebSearch",
       "Write"
-    ]
+    ],
+	"deny": [
+		"Bash(curl:*)",
+		"Bash(wget:*)"
+	]
   }
 }
