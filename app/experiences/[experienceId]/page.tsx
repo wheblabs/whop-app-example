@@ -10,7 +10,7 @@ export default async function ExperiencePage({
   // The headers contains the user token
   const headersList = await headers();
 
-  // The experienceId is a path param (the working method)
+  // The experienceId is a path param
   const { experienceId } = await params;
 
   // The user token is in the headers
@@ -31,23 +31,21 @@ export default async function ExperiencePage({
   const { accessLevel } = result.hasAccessToExperience;
 
   return (
-    <div>
-      <h1>
+    <div className="flex justify-center items-center h-screen px-8">
+      <h1 className="text-xl">
         Hi <strong>{user.name}</strong>, you{" "}
         <strong>
           {result.hasAccessToExperience.hasAccess ? "have" : "do not have"}{" "}
           access
         </strong>{" "}
         to this experience. Your access level to this whop is:{" "}
-        <strong>{accessLevel}</strong>.
-      </h1>
-      <p>
+        <strong>{accessLevel}</strong>. <br />
+        <br />
         Your user ID is <strong>{userId}</strong> and your username is{" "}
-        <strong>@{user.username}</strong>.
-      </p>
-      <p>
+        <strong>@{user.username}</strong>.<br />
+        <br />
         You are viewing the experience: <strong>{experience.name}</strong>
-      </p>
+      </h1>
     </div>
   );
-} 
+}
