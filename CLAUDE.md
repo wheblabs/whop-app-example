@@ -5,6 +5,9 @@ You are helping build Whop apps inside a special development environment called 
 ## 🎯 Your Role
 You are an AI coding assistant helping users build and deploy Whop integrations/apps quickly. Users can describe what they want, and you help them build it using the Whop platform. You exist within a Whop integration and help users create new integrations that can be deployed to the Whop app store.
 
+## 📝 App Architecture Note
+This template is designed for **single experience apps**. The app works within one experience context, with the experienceId provided via URL parameters. All app logic happens in the `app/[experienceId]/page.tsx` file.
+
 ## 🏗️ Development Environment
 
 ### Project Setup
@@ -29,18 +32,14 @@ You are an AI coding assistant helping users build and deploy Whop integrations/
 ## 📋 Development Guidelines
 
 ### 1. File Structure
-Follow the Next.js app router pattern:
+Follow the Next.js app router pattern for a single experience app:
 ```
 app/
-├── page.tsx                              # Landing page with setup instructions
-├── experiences/
-│   └── [experienceId]/
-│       ├── page.tsx                      # Dynamic experience pages
-│       └── edit/page.tsx                 # Edit pages for admins
+├── page.tsx                              # Landing page
+├── [experienceId]/
+│   └── page.tsx                          # Main experience page (single experience)
 ├── api/
-│   ├── webhooks/route.ts                 # Webhook handlers
-│   └── experiences/
-│       └── [experienceId]/route.ts       # Experience-specific APIs
+│   └── webhooks/route.ts                 # Webhook handlers
 ├── components/                           # Reusable components
 └── lib/
     └── whop-api.ts                       # Whop API client setup
@@ -52,26 +51,34 @@ import { WhopServerSdk, makeUserTokenVerifier } from "@whop/api";
 
 export const whopApi = WhopServerSdk({
   appApiKey: process.env.WHOP_API_KEY ?? "fallback",
-  onBehalfOfUserId: process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID,
-  companyId: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID,
+  onBehalfOfUserId: process.env.WHOP_AGENT_USER_ID,
+  companyId: process.env.WHOP_COMPANY_ID,
 });
 
 export const verifyUserToken = makeUserTokenVerifier({
-  appId: process.env.NEXT_PUBLIC_WHOP_APP_ID ?? "fallback",
+  appId: process.env.WHOP_APP_ID ?? "fallback",
   dontThrow: true,
 });
 ```
 
 ### 3. Authentication Pattern
-For server components requiring authentication:
+For server components requiring authentication in a single experience app:
 ```typescript
 import { whopApi, verifyUserToken } from "@/lib/whop-api";
 import { headers } from "next/headers";
 
-export default async function Page({ params }: { params: Promise<{ experienceId: string }> }) {
+export default async function ExperiencePage({
+  params,
+}: {
+  params: Promise<{ experienceId: string }>;
+}) {
   const headersList = await headers();
-  const { userId } = await verifyUserToken(headersList);
+  
+  // The experienceId comes from URL parameters (proven working method)
   const { experienceId } = await params;
+  
+  // Verify user token from headers
+  const { userId } = await verifyUserToken(headersList);
   
   // Check access
   const result = await whopApi.checkIfUserHasAccessToExperience({
@@ -85,10 +92,23 @@ export default async function Page({ params }: { params: Promise<{ experienceId:
   
   // accessLevel: 'admin' | 'customer' | 'no_access'
   const { accessLevel } = result.hasAccessToExperience;
+  
+  const user = (await whopApi.getUser({ userId })).publicUser;
+  const experience = (await whopApi.getExperience({ experienceId })).experience;
+  
+  // Your app logic here
 }
 ```
 
-### 4. Client-Side Iframe SDK
+### 4. Experience ID Source
+The experienceId comes from URL path parameters in the route `app/[experienceId]/page.tsx`. This is the standard Next.js dynamic route approach and is the proven working method for Whop apps.
+
+```typescript
+// Get experienceId from URL parameters (the working method)
+const { experienceId } = await params;
+```
+
+### 6. Client-Side Iframe SDK
 For client components needing iframe integration:
 ```typescript
 "use client";
@@ -110,11 +130,11 @@ Required in `.env.local`:
 ```env
 # Whop Integration (Required)
 WHOP_API_KEY=your_whop_api_key_here
-NEXT_PUBLIC_WHOP_AGENT_USER_ID=your_whop_agent_user_id_here
-NEXT_PUBLIC_WHOP_APP_ID=your_whop_app_id_here
+WHOP_AGENT_USER_ID=your_whop_agent_user_id_here
+WHOP_APP_ID=your_whop_app_id_here
 
 # Optional
-NEXT_PUBLIC_WHOP_COMPANY_ID=your_company_id_here
+WHOP_COMPANY_ID=your_company_id_here
 
 # Additional services (if needed)
 OPENAI_API_KEY=your_openai_api_key
@@ -126,6 +146,9 @@ DIRECT_URL=your_direct_database_url
 
 ### 1. Forum/Community Apps
 ```typescript
+// Get experienceId from URL parameters (as shown in authentication pattern)
+const { experienceId } = await params;
+
 // Create or find a forum
 const forum = await whopApi.findOrCreateForum({
   input: {
@@ -148,9 +171,12 @@ const post = await whopApi.createForumPost({
 
 ### 2. Chat/Messaging Apps
 ```typescript
+// Get experienceId from URL parameters (as shown in authentication pattern)
+const { experienceId } = await params;
+
 // Send a message to a chat
 await whopApi.sendMessageToChat({
-  experienceId: "exp_XXXXXXXX",
+  experienceId: experienceId,
   message: "Hello from the bot!",
 });
 
@@ -193,10 +219,13 @@ const attachmentId = response.directUploadId;
 
 ### 5. Notification Apps
 ```typescript
+// Get experienceId from URL parameters (as shown in authentication pattern)
+const { experienceId } = await params;
+
 // Send push notification
 await whopApi.sendPushNotification({
   input: {
-    experienceId: "exp_XYZ",
+    experienceId: experienceId,
     title: "Important Update",
     content: "Your new content is available!",
   },
@@ -222,6 +251,7 @@ await whopApi.sendPushNotification({
    - Always verify user tokens in server components
    - Check access levels before showing content
    - Use agent user ID for bot actions
+   - Get experienceId from URL parameters (`params.experienceId`)
 
 3. **Rate Limits**
    - 10 requests per 10 seconds
