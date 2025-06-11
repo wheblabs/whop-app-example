@@ -1,8 +1,14 @@
 export default function Page() {
 	return (
-		<div>
-			<h1>Welcome to your Whop App</h1>
-			<p>This app should be accessed through a Whop experience URL.</p>
+		<div className="min-h-screen flex items-center justify-center">
+			<div className="text-center">
+				<h1 className="text-4xl font-bold text-gray-900 mb-4">
+					Welcome to Your App
+				</h1>
+				<p className="text-lg text-gray-600">
+					This is your main application page. Start building here!
+				</p>
+			</div>
 		</div>
 	);
 }
