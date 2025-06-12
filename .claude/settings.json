@@ -19,7 +19,9 @@
     ],
 	"deny": [
 		"Bash(curl:*)",
-		"Bash(wget:*)"
+		"Bash(wget:*)",
+		"Bash(echo .env*)",
+		"Read(.env*)"
 	]
   }
 }
