@@ -14,36 +14,36 @@ const nextConfig: NextConfig = {
 	// 		},
 	// 	];
 	// },
-	async headers() {
-		return [
-			{
-				source: "/(.*)",
-				headers: [
-					{
-						key: "X-Frame-Options",
-						value: "SAMEORIGIN",
-					},
-					{
-						key: "Content-Security-Policy",
-						value: "frame-ancestors 'self' *.vidgenx.com",
-					},
-				],
-			},
-			{
-				source: "/_next/webpack-hmr",
-				headers: [
-					{
-						key: "Access-Control-Allow-Origin",
-						value: "*",
-					},
-					{
-						key: "Access-Control-Allow-Methods",
-						value: "GET, OPTIONS",
-					},
-				],
-			},
-		];
-	},
+	// async headers() {
+	// 	return [
+	// 		{
+	// 			source: "/(.*)",
+	// 			headers: [
+	// 				{
+	// 					key: "X-Frame-Options",
+	// 					value: "SAMEORIGIN",
+	// 				},
+	// 				{
+	// 					key: "Content-Security-Policy",
+	// 					value: "frame-ancestors 'self' *.vidgenx.com",
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			source: "/_next/webpack-hmr",
+	// 			headers: [
+	// 				{
+	// 					key: "Access-Control-Allow-Origin",
+	// 					value: "*",
+	// 				},
+	// 				{
+	// 					key: "Access-Control-Allow-Methods",
+	// 					value: "GET, OPTIONS",
+	// 				},
+	// 			],
+	// 		},
+	// 	];
+	// },
 };
 
 export default nextConfig;
