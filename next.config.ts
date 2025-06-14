@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
 	    		hmrRefreshes: true,
 		},
   	},
+	devIndicators: false,
 	images: {
 		remotePatterns: [{ hostname: "**" }],
 	},
