@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
     		}
     		return config
 	},
+	logging: {
+		fetches: {
+			fullUrl: true,
+	    		hmrRefreshes: true,
+		},
+  	},
 	images: {
 		remotePatterns: [{ hostname: "**" }],
 	},
