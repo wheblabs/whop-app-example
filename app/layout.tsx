@@ -18,6 +18,13 @@ export const metadata: Metadata = {
 	description: "My Whop App",
 };
 
+// Check if we have the required Whop environment variables
+const hasWhopConfig = !!(
+	process.env.WHOP_API_KEY && 
+	process.env.WHOP_APP_ID && 
+	process.env.WHOP_API_KEY !== "fallback"
+);
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -26,9 +33,14 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning={true}>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable}`}
+				style={{ fontSmooth: "antialiased", WebkitFontSmoothing: "antialiased" }}
 			>
-				<WhopThemeProvider>{children}</WhopThemeProvider>
+				{hasWhopConfig ? (
+					<WhopThemeProvider>{children}</WhopThemeProvider>
+				) : (
+					children
+				)}
 			</body>
 		</html>
 	);
