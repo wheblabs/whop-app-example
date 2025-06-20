@@ -1,4 +1,4 @@
-# Claude Code Instructions for Whopshop
+# Claude Code (Sonnet 4) Instructions for Whopshop
 
 You are an expert web design agent building Whop apps inside a special development environment called "Whopshop" - a Whop app that creates other Whop apps.
 
@@ -32,67 +32,76 @@ This template is designed as a basic app. All app logic happens in the main `app
 ## 🎨 MODERN UI DESIGN PRINCIPLES (2025 Standards)
 
 ### Design Philosophy
-Create interfaces that feel like they belong in 2025, not 2015. Think Vercel's dashboard, Linear's precision, Raycast's efficiency, and Arc's innovation.
+Create interfaces that feel native to the Whop platform - dense, refined, and professional. Think Linear's precision, Productlane's information density, and modern SaaS dashboards. The app should feel like a natural extension of Whop, not a separate entity.
 
 ### Core Design Rules
 
-1. **Spatial Design & Depth**
-   - Use subtle shadows: `box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)`
-   - Layer elements with proper z-index hierarchy
-   - Create depth with overlapping elements and blur effects
-   - Use backdrop-filter for glassmorphism: `backdrop-filter: blur(10px)`
+1. **Information Density & Compact Layout**
+   - **CRITICAL**: Design for embedded contexts - your app is a component within Whop, not a full-page application
+   - Use tighter spacing: 12-16px between major sections (not 32-48px)
+   - List items: 12-16px vertical padding (not 24-32px)
+   - Reduce all spacing by ~30% from typical web apps
+   - Maximize content visibility - users should see multiple items without scrolling
 
 2. **Typography Hierarchy**
-   - **Headings**: Inter/SF Pro Display, weights 600-800
-   - **Body**: Inter/SF Pro Text, weight 400-500
-   - **Sizes**: Use a modular scale (1.25 ratio)
-     - h1: 2.5rem (40px)
-     - h2: 2rem (32px)
-     - h3: 1.5rem (24px)
-     - body: 0.875rem-1rem (14-16px)
-     - small: 0.75rem (12px)
-   - **Line heights**: 1.2 for headings, 1.5-1.6 for body
-   - **Letter spacing**: -0.02em for headings, normal for body
+   - **Page titles**: 1.5rem (24px) - weight 600
+   - **Section headers**: 1.125rem (18px) - weight 600
+   - **Card titles**: 1rem (16px) - weight 600
+   - **Body text**: 0.875rem (14px) - weight 400
+   - **Small/meta text**: 0.75rem (12px) - weight 400
+   - **Line heights**: 1.4 for all text (tighter than typical)
+   - **Letter spacing**: -0.01em for headers, normal for body
 
 3. **Color System**
    ```css
-   /* Base colors */
-   --background: #0A0A0A;           /* Rich black, not pure black */
-   --surface: #111111;              /* Elevated surfaces */
-   --surface-hover: #1A1A1A;        /* Interactive states */
-   --border: rgba(255,255,255,0.08); /* Subtle borders */
-   --border-hover: rgba(255,255,255,0.16);
+   /* Base colors - match Whop's aesthetic */
+   --background: #0A0A0A;           /* Match Whop's dark theme */
+   --surface: #111111;              /* Cards and elevated surfaces */
+   --surface-hover: #1A1A1A;        /* Hover states */
+   --border: rgba(255,255,255,0.06); /* Very subtle borders */
+   --border-hover: rgba(255,255,255,0.12);
    
    /* Text colors */
-   --text-primary: #FAFAFA;         /* High contrast */
-   --text-secondary: #A1A1A1;       /* Muted text */
-   --text-tertiary: #6B6B6B;        /* Very muted */
+   --text-primary: #FAFAFA;         /* Primary text */
+   --text-secondary: #999999;       /* Secondary text */
+   --text-tertiary: #666666;        /* Disabled/very muted */
    
    /* Accent colors */
-   --accent: #0070F3;               /* Vercel blue or brand color */
-   --accent-hover: #0051CC;
-   --success: #00D395;
-   --warning: #F5A623;
-   --error: #E00;
+   --accent: #3B82F6;               /* Primary actions */
+   --accent-hover: #2563EB;
+   --success: #10B981;
+   --warning: #F59E0B;
+   --error: #EF4444;
    ```
 
-4. **Spacing & Layout**
-   - Use 4px grid system (4, 8, 12, 16, 20, 24, 32, 40, 48, 64)
-   - Containers: max-width 1200px with responsive padding
-   - Card padding: 20-24px on desktop, 16px on mobile
-   - Consistent gaps: 8px for tight, 16px for normal, 24px for loose
-
-5. **Interactive Elements**
+4. **Compact Spacing Guidelines**
    ```css
-   /* Buttons */
+   /* Spacing scale - use these consistently */
+   --space-xs: 4px;
+   --space-sm: 8px;
+   --space-md: 12px;
+   --space-lg: 16px;
+   --space-xl: 24px;
+   --space-2xl: 32px;
+   
+   /* Component-specific spacing */
+   --card-padding: 16px;            /* Not 24px */
+   --list-item-padding: 12px 16px;  /* Vertical, horizontal */
+   --button-padding: 6px 12px;      /* Compact buttons */
+   --input-padding: 8px 12px;       /* Compact inputs */
+   --section-gap: 16px;             /* Between major sections */
+   ```
+
+5. **Compact Interactive Elements**
+   ```css
+   /* Buttons - smaller and more refined */
    button {
-     padding: 8px 16px;
+     padding: 6px 12px;
      border-radius: 6px;
-     font-size: 14px;
+     font-size: 13px;
      font-weight: 500;
-     transition: all 0.2s ease;
-     cursor: pointer;
-     border: 1px solid transparent;
+     height: 32px; /* Fixed height for consistency */
+     transition: all 0.15s ease;
      
      /* Primary button */
      &.primary {
@@ -100,68 +109,167 @@ Create interfaces that feel like they belong in 2025, not 2015. Think Vercel's d
        color: white;
        &:hover {
          background: var(--accent-hover);
-         transform: translateY(-1px);
-         box-shadow: 0 4px 12px rgba(0,112,243,0.4);
        }
      }
      
      /* Secondary button */
      &.secondary {
-       background: transparent;
+       background: rgba(255,255,255,0.05);
        color: var(--text-primary);
-       border-color: var(--border);
+       border: 1px solid var(--border);
        &:hover {
+         background: rgba(255,255,255,0.08);
          border-color: var(--border-hover);
-         background: var(--surface-hover);
        }
+     }
+     
+     /* Icon buttons */
+     &.icon-button {
+       width: 32px;
+       height: 32px;
+       padding: 0;
+       display: flex;
+       align-items: center;
+       justify-content: center;
      }
    }
    
-   /* Input fields */
+   /* Compact input fields */
    input, textarea {
-     background: var(--surface);
+     background: rgba(255,255,255,0.05);
      border: 1px solid var(--border);
      border-radius: 6px;
      padding: 8px 12px;
-     font-size: 14px;
-     transition: all 0.2s ease;
+     font-size: 13px;
+     height: 36px; /* Fixed height for inputs */
      
      &:focus {
        outline: none;
        border-color: var(--accent);
-       box-shadow: 0 0 0 3px rgba(0,112,243,0.1);
+       background: rgba(255,255,255,0.08);
+     }
+   }
+   
+   /* Compact select/dropdown */
+   select {
+     height: 36px;
+     padding: 0 32px 0 12px;
+     font-size: 13px;
+   }
+   ```
+
+6. **List & Card Patterns**
+   ```css
+   /* Compact list items */
+   .list-item {
+     padding: 12px 16px;
+     border-bottom: 1px solid var(--border);
+     display: flex;
+     align-items: flex-start;
+     gap: 12px;
+     
+     &:hover {
+       background: var(--surface-hover);
+     }
+   }
+   
+   /* User info in lists */
+   .user-info {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     
+     .avatar {
+       width: 32px;
+       height: 32px;
+       border-radius: 50%;
+     }
+     
+     .username {
+       font-size: 14px;
+       font-weight: 500;
+     }
+     
+     .timestamp {
+       font-size: 12px;
+       color: var(--text-secondary);
+     }
+   }
+   
+   /* Compact cards */
+   .card {
+     background: var(--surface);
+     border: 1px solid var(--border);
+     border-radius: 8px;
+     padding: 16px;
+   }
+   ```
+
+7. **Status Badges & Pills**
+   ```css
+   .status-badge {
+     display: inline-flex;
+     align-items: center;
+     padding: 2px 8px;
+     border-radius: 4px;
+     font-size: 11px;
+     font-weight: 500;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+     
+     &.high { 
+       background: rgba(239, 68, 68, 0.2); 
+       color: #F87171; 
+     }
+     &.medium { 
+       background: rgba(245, 158, 11, 0.2); 
+       color: #FCD34D; 
+     }
+     &.low { 
+       background: rgba(16, 185, 129, 0.2); 
+       color: #34D399; 
      }
    }
    ```
 
-6. **Micro-interactions**
-   - Hover states: subtle color changes + slight transforms
-   - Focus states: clear but not overwhelming (3px offset shadows)
-   - Loading states: skeleton screens, not spinners
-   - Transitions: 200ms for hover, 300ms for layout changes
-   - Use spring animations for natural feel
-
-7. **Modern Patterns**
-   - **Cards**: Subtle borders, not heavy shadows
-   - **Modals**: Centered with backdrop blur, smooth animations
-   - **Navigation**: Sticky headers with blur, breadcrumbs for context
-   - **Tables**: Minimal borders, hover states, sticky headers
-   - **Empty states**: Helpful illustrations, clear CTAs
-   - **Toasts**: Top-right positioning, auto-dismiss, minimal design
-
-8. **Responsive Design**
+8. **Navigation & Headers**
    ```css
-   /* Breakpoints */
-   --mobile: 640px;
-   --tablet: 768px;
-   --desktop: 1024px;
-   --wide: 1280px;
+   /* Compact header */
+   .app-header {
+     height: 48px; /* Not 64px */
+     padding: 0 16px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     border-bottom: 1px solid var(--border);
+   }
    
-   /* Mobile-first approach */
-   @media (min-width: 768px) {
-     /* Tablet and up styles */
+   /* Tab navigation */
+   .tabs {
+     display: flex;
+     gap: 4px;
+     padding: 4px;
+     background: rgba(255,255,255,0.03);
+     border-radius: 6px;
+     
+     .tab {
+       padding: 6px 12px;
+       font-size: 13px;
+       font-weight: 500;
+       border-radius: 4px;
+       
+       &.active {
+         background: rgba(255,255,255,0.08);
+       }
+     }
    }
    ```
+
+9. **Responsive Behavior**
+   - Design mobile-first since Whop apps are often viewed on smaller screens
+   - Don't increase spacing on larger screens - maintain density
+   - Use the same compact spacing across all breakpoints
+   - Consider that the app is embedded, so available width is limited
 
 ## 📋 Development Guidelines
 

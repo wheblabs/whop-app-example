@@ -1,14 +1,13 @@
 "use client";
 
 import styled from "styled-components";
+import Image from "next/image";
 
 export default function Page() {
 	return (
 		<Container>
 			<Content>
-				<Title>
-					Welcome to Your App
-				</Title>
+				<Image src="/public/whopshop_logo.png" alt="Whop Logo" width={100} />
 				<Description>
 					This is your main application page. Start building here!
 				</Description>
