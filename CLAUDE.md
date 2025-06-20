@@ -154,8 +154,8 @@ Build the app directly in `app/page.tsx`. You can:
    - TypeScript for type safety
 
 3. **Styling**
-   - Use Tailwind CSS utility classes
-   - Available UI libraries: lucide-react, recharts, shadcn/ui
+   - Use Styled Components for styling
+   - Available UI libraries: lucide-react, recharts
 
 4. **API Integration** (Optional)
    - Only add Whop APIs if the app needs them
