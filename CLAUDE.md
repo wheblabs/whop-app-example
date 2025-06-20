@@ -29,6 +29,140 @@ This template is designed as a basic app. All app logic happens in the main `app
 }
 ```
 
+## 🎨 MODERN UI DESIGN PRINCIPLES (2025 Standards)
+
+### Design Philosophy
+Create interfaces that feel like they belong in 2025, not 2015. Think Vercel's dashboard, Linear's precision, Raycast's efficiency, and Arc's innovation.
+
+### Core Design Rules
+
+1. **Spatial Design & Depth**
+   - Use subtle shadows: `box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)`
+   - Layer elements with proper z-index hierarchy
+   - Create depth with overlapping elements and blur effects
+   - Use backdrop-filter for glassmorphism: `backdrop-filter: blur(10px)`
+
+2. **Typography Hierarchy**
+   - **Headings**: Inter/SF Pro Display, weights 600-800
+   - **Body**: Inter/SF Pro Text, weight 400-500
+   - **Sizes**: Use a modular scale (1.25 ratio)
+     - h1: 2.5rem (40px)
+     - h2: 2rem (32px)
+     - h3: 1.5rem (24px)
+     - body: 0.875rem-1rem (14-16px)
+     - small: 0.75rem (12px)
+   - **Line heights**: 1.2 for headings, 1.5-1.6 for body
+   - **Letter spacing**: -0.02em for headings, normal for body
+
+3. **Color System**
+   ```css
+   /* Base colors */
+   --background: #0A0A0A;           /* Rich black, not pure black */
+   --surface: #111111;              /* Elevated surfaces */
+   --surface-hover: #1A1A1A;        /* Interactive states */
+   --border: rgba(255,255,255,0.08); /* Subtle borders */
+   --border-hover: rgba(255,255,255,0.16);
+   
+   /* Text colors */
+   --text-primary: #FAFAFA;         /* High contrast */
+   --text-secondary: #A1A1A1;       /* Muted text */
+   --text-tertiary: #6B6B6B;        /* Very muted */
+   
+   /* Accent colors */
+   --accent: #0070F3;               /* Vercel blue or brand color */
+   --accent-hover: #0051CC;
+   --success: #00D395;
+   --warning: #F5A623;
+   --error: #E00;
+   ```
+
+4. **Spacing & Layout**
+   - Use 4px grid system (4, 8, 12, 16, 20, 24, 32, 40, 48, 64)
+   - Containers: max-width 1200px with responsive padding
+   - Card padding: 20-24px on desktop, 16px on mobile
+   - Consistent gaps: 8px for tight, 16px for normal, 24px for loose
+
+5. **Interactive Elements**
+   ```css
+   /* Buttons */
+   button {
+     padding: 8px 16px;
+     border-radius: 6px;
+     font-size: 14px;
+     font-weight: 500;
+     transition: all 0.2s ease;
+     cursor: pointer;
+     border: 1px solid transparent;
+     
+     /* Primary button */
+     &.primary {
+       background: var(--accent);
+       color: white;
+       &:hover {
+         background: var(--accent-hover);
+         transform: translateY(-1px);
+         box-shadow: 0 4px 12px rgba(0,112,243,0.4);
+       }
+     }
+     
+     /* Secondary button */
+     &.secondary {
+       background: transparent;
+       color: var(--text-primary);
+       border-color: var(--border);
+       &:hover {
+         border-color: var(--border-hover);
+         background: var(--surface-hover);
+       }
+     }
+   }
+   
+   /* Input fields */
+   input, textarea {
+     background: var(--surface);
+     border: 1px solid var(--border);
+     border-radius: 6px;
+     padding: 8px 12px;
+     font-size: 14px;
+     transition: all 0.2s ease;
+     
+     &:focus {
+       outline: none;
+       border-color: var(--accent);
+       box-shadow: 0 0 0 3px rgba(0,112,243,0.1);
+     }
+   }
+   ```
+
+6. **Micro-interactions**
+   - Hover states: subtle color changes + slight transforms
+   - Focus states: clear but not overwhelming (3px offset shadows)
+   - Loading states: skeleton screens, not spinners
+   - Transitions: 200ms for hover, 300ms for layout changes
+   - Use spring animations for natural feel
+
+7. **Modern Patterns**
+   - **Cards**: Subtle borders, not heavy shadows
+   - **Modals**: Centered with backdrop blur, smooth animations
+   - **Navigation**: Sticky headers with blur, breadcrumbs for context
+   - **Tables**: Minimal borders, hover states, sticky headers
+   - **Empty states**: Helpful illustrations, clear CTAs
+   - **Toasts**: Top-right positioning, auto-dismiss, minimal design
+
+8. **Responsive Design**
+   ```css
+   /* Breakpoints */
+   --mobile: 640px;
+   --tablet: 768px;
+   --desktop: 1024px;
+   --wide: 1280px;
+   
+   /* Mobile-first approach */
+   @media (min-width: 768px) {
+     /* Tablet and up styles */
+   }
+   ```
+
 ## 📋 Development Guidelines
 
 ### 1. File Structure
@@ -57,7 +191,71 @@ export default function Page() {
 }
 ```
 
-### 3. Whop API Client Setup (`lib/whop-api.ts`) - Optional
+### 3. Styled Components Best Practices
+```typescript
+import styled from 'styled-components';
+
+// Use semantic names and organize by component
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+`;
+
+const Card = styled.div`
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+`;
+
+// Group related styles
+const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
+  /* Base styles */
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  
+  /* Variant styles */
+  ${props => props.variant === 'primary' && `
+    background: var(--accent);
+    color: white;
+    
+    &:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,112,243,0.4);
+    }
+  `}
+  
+  ${props => props.variant === 'secondary' && `
+    background: transparent;
+    color: var(--text-primary);
+    border-color: var(--border);
+    
+    &:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-hover);
+    }
+  `}
+`;
+```
+
+### 4. Whop API Client Setup (`lib/whop-api.ts`) - Optional
 Only needed if you want to integrate with Whop APIs:
 ```typescript
 import { WhopServerSdk, makeUserTokenVerifier } from "@whop/api";
@@ -74,7 +272,7 @@ export const verifyUserToken = makeUserTokenVerifier({
 });
 ```
 
-### 4. Authentication Pattern (Optional)
+### 5. Authentication Pattern (Optional)
 Only use if you need user authentication:
 ```typescript
 import { whopApi, verifyUserToken } from "@/lib/whop-api";
@@ -90,7 +288,7 @@ export default async function Page() {
 }
 ```
 
-### 5. Client-Side Iframe SDK (Optional)
+### 6. Client-Side Iframe SDK (Optional)
 For client components needing iframe integration:
 ```typescript
 "use client";
@@ -107,7 +305,7 @@ export default function Component() {
 }
 ```
 
-### 6. Environment Variables (Optional)
+### 7. Environment Variables (Optional)
 Only needed if using Whop APIs:
 ```env
 # Whop Integration (Only if needed)
@@ -143,7 +341,7 @@ Build the app directly in `app/page.tsx`. You can:
 
 ## ⚠️ Important Guidelines
 
-1. **Keep it Simple**
+1. **Keep it Organized**
    - Build your app directly in `app/page.tsx`
    - Only add Whop integration if specifically needed
    - Focus on creating a great user experience
@@ -155,27 +353,100 @@ Build the app directly in `app/page.tsx`. You can:
 
 3. **Styling**
    - Use Styled Components for styling
-   - Available UI libraries: lucide-react, recharts
+   - Follow the modern UI principles above
+   - Create cohesive, polished interfaces
 
 4. **API Integration** (Optional)
    - Only add Whop APIs if the app needs them
    - Use environment variables for API keys
    - Handle authentication only if required
 
-## 🎨 UI Components
+## 🎨 UI Component Examples
 
-When creating UI:
-- Create Styled-components for each component at the bottom of the file.
-- Available libraries: lucide-react for icons, recharts for charts
-- Create dynamic, responsive designs that are hypermodern, spacial, or immersive (2025)
-- Focus on great UX
+### Modern Card Component
+```typescript
+const StatsCard = styled.div`
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255,255,255,0.1) 20%, 
+      rgba(255,255,255,0.1) 80%, 
+      transparent
+    );
+  }
+`;
+
+const StatValue = styled.div`
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+`;
+
+const StatLabel = styled.div`
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+`;
+```
+
+### Modern Table
+```typescript
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const Thead = styled.thead`
+  border-bottom: 1px solid var(--border);
+`;
+
+const Th = styled.th`
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
+
+const Tr = styled.tr`
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: var(--surface-hover);
+  }
+`;
+
+const Td = styled.td`
+  padding: 16px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+`;
+```
 
 ## 💡 When Building Apps
 
 1. **Start with the use case** - What problem does this solve?
-2. **Build incrementally** - Start simple, add features gradually
-3. **Test locally first** - Use the dev server to iterate quickly
-4. **Handle errors gracefully** - Always provide user feedback
-5. **Make it beautiful** - Use good design principles
+2. **Design with intention** - Every pixel should have purpose
+3. **Build incrementally** - Start simple, refine the details
+4. **Test interactions** - Ensure smooth, responsive feedback
+5. **Polish relentlessly** - The difference is in the details
 
-Remember: You're building apps that could be used by anyone. Focus on creating something useful, aesthetic, and well-functioning.
+Remember: You're creating apps that should feel cutting-edge and professional. Channel the design sensibilities of companies like Vercel, Linear, Raycast, and Arc. Make interfaces that are dense with information yet feel spacious, complex yet intuitive, powerful yet approachable.
