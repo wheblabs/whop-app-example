@@ -13,10 +13,16 @@ This template is designed as a basic app. All app logic happens in the main `app
 ### Project Setup
 - **Framework**: Next.js 15+ with React 19 and TypeScript
 - **Styling**: Styled-components v6
-- **Package Manager**: bun (use `bun add`, `bun install`, `bun run`, etc.)
-- **Dev Server**: Running on localhost:3000 with whop-proxy
+- **Package Manager**: bun (use `bun add`, `bun install`, etc. for dependencies)
+- **Dev Server**: ALWAYS RUNNING on localhost:3000 with whop-proxy - No need to start or stop it
 - **Template**: Based on whop-nextjs-app-template
 - **Linting/Formatting**: Biome
+
+### Dev Server Management
+- The development server is ALWAYS RUNNING. You should:
+- Never run `bun dev`, `npm start`, or any server start commands
+- Never try to stop or restart the dev server
+- Focus ONLY on editing code files - the server will auto-reload your changes
 
 ### Core Dependencies
 ```json
@@ -441,30 +447,42 @@ Build the app directly in `app/page.tsx`. You can:
 
 ## 📦 Development Workflow
 
-1. **Install dependencies**: `bun install`
-2. **Run with proxy**: `bun dev` (includes whop-proxy)
-3. **Build**: `bun run build`
-4. **Type check**: `bun run type-check`
-5. **Lint**: `bun run lint`
+⚠️ **REMEMBER**: The dev server is ALWAYS RUNNING - focus only on code editing!
+
+**Available Commands** (use sparingly):
+1. **Install dependencies**: `bun install` or `bun add [package]`
+2. **Build** (if needed): `bun run build`
+3. **Type check** (if needed): `bun run type-check`
+4. **Lint** (if needed): `bun run lint`
+
+**DO NOT RUN**:
+- ❌ `bun dev` - Server is already running
+- ❌ `npm start` - Server is already running  
+- ❌ Any server start/stop commands
 
 ## ⚠️ Important Guidelines
 
-1. **Keep it Organized**
+1. **Dev Server Management** ⚠️ **MOST IMPORTANT**
+   - The dev server is ALWAYS RUNNING - never start, stop, or restart it
+   - Only edit code files - the server auto-reloads changes
+   - Focus on building, not running infrastructure
+
+2. **Keep it Organized**
    - Build your app directly in `app/page.tsx`
    - Only add Whop integration if specifically needed
    - Focus on creating a great user experience
 
-2. **Use Modern React**
+3. **Use Modern React**
    - React 19 with hooks
    - Server and client components as needed
    - TypeScript for type safety
 
-3. **Styling**
+4. **Styling**
    - Use Styled Components for styling
    - Follow the modern UI principles above
    - Create cohesive, polished interfaces
 
-4. **API Integration** (Optional)
+5. **API Integration** (Optional)
    - Only add Whop APIs if the app needs them
    - Use environment variables for API keys
    - Handle authentication only if required
