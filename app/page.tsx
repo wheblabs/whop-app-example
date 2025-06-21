@@ -36,7 +36,7 @@ const Title = styled.h1`
 	font-size: 2.25rem; /* 36px */
 	font-weight: bold;
 	color: white;
-	margin-bottom: 1rem;
+	margin-bottom: 0.5;
 `;
 
 const Description = styled.p`
