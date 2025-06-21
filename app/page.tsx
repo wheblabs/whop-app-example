@@ -25,6 +25,10 @@ const Container = styled.div`
 
 const Content = styled.div`
 	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 `;
 
 const Title = styled.h1`
