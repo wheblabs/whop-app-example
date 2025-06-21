@@ -7,7 +7,7 @@ export default function Page() {
 	return (
 		<Container>
 			<Content>
-				<Image src="/whopshop_logo.png" alt="Whop Logo" width={200} height={100} style={{ objectFit: 'contain' }} quality={100} priority />
+				<Image src="/whopshop_logo.png" alt="Whop Logo" width={320} height={180} style={{ objectFit: 'contain' }} quality={100} priority />
 				<Description>
 					This is your main application page. Whopshop will build your app here.
 				</Description>
