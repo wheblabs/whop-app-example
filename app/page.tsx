@@ -36,5 +36,5 @@ const Title = styled.h1`
 
 const Description = styled.p`
 	font-size: 1.125rem; /* 18px */
-	color: #6b7280; /* gray-600 */
+	color: #5b5b5b; /* gray-600 */
 `;
