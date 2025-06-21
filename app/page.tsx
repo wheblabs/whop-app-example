@@ -7,7 +7,7 @@ export default function Page() {
 	return (
 		<Container>
 			<Content>
-				<Image src="/public/whopshop_logo.png" alt="Whop Logo" width={100} />
+				<Image src="/public/whopshop_logo.png" alt="Whop Logo" width={100} height={100} />
 				<Description>
 					This is your main application page. Start building here!
 				</Description>
