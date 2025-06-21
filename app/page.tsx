@@ -17,6 +17,7 @@ export default function Page() {
 }
 
 const Container = styled.div`
+	background-color: #141414;
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
