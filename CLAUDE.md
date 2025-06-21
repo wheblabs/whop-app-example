@@ -14,7 +14,7 @@ This template is designed as a basic app. All app logic happens in the main `app
 - **Framework**: Next.js 15+ with React 19 and TypeScript
 - **Styling**: Styled-components v6
 - **Package Manager**: bun (use `bun add`, `bun install`, etc. for dependencies)
-- **Dev Server**: ALWAYS RUNNING on localhost:3000 with whop-proxy - No need to start or stop it
+- **Dev Server**: Always running on localhost:3000 with whop-proxy - No need to start or stop it. Do not run `bun run build` or any build command.
 - **Template**: Based on whop-nextjs-app-template
 - **Linting/Formatting**: Biome
 
@@ -34,6 +34,7 @@ This template is designed as a basic app. All app logic happens in the main `app
   "@whop/iframe": "for iframe SDK"
 }
 ```
+
 
 ## 🎨 MODERN UI DESIGN PRINCIPLES (2025 Standards)
 
@@ -436,6 +437,45 @@ DATABASE_URL=your_database_url
 DIRECT_URL=your_direct_database_url
 ```
 
+### 8. Solana integration / wallet data
+If the user is building an app with solana integration, you can use PublicNode to read wallet address data
+
+```typescript
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+// Simple single endpoint
+const connection = new Connection('https://solana.publicnode.com', 'confirmed');
+
+// Get wallet balance
+const getBalance = async (walletAddress) => {
+	const publicKey = new PublicKey(walletAddress);
+	const balance = await connection.getBalance(publicKey);
+	return balance / LAMPORTS_PER_SOL;
+};
+```
+
+### Solana Multi-Endpoint Fallback Pattern
+```typescript
+const RPC_ENDPOINTS = [  
+	{ url: 'https://solana.publicnode.com', name: 'PublicNode' },  
+	{ url: 'https://api.mainnet-beta.solana.com', name: 'Solana Labs' }  
+];
+
+const fetchWithFallback = async (address) => {
+	for (const endpoint of RPC_ENDPOINTS) {
+		try {
+			const connection = new Connection(endpoint.url, 'confirmed');
+			const publicKey = new PublicKey(address);
+			const balance = await connection.getBalance(publicKey);
+			return { balance: balance / LAMPORTS_PER_SOL, rpcEndpoint: endpoint.name };
+		} catch (error) {
+			continue; // Try next endpoint
+		}
+	}
+	return { balance: 0, rpcEndpoint: 'Failed' };
+};
+```
+
 ## 🚀 Building The App
 
 Build the app directly in `app/page.tsx`. You can:
@@ -447,42 +487,33 @@ Build the app directly in `app/page.tsx`. You can:
 
 ## 📦 Development Workflow
 
-⚠️ **REMEMBER**: The dev server is ALWAYS RUNNING - focus only on code editing!
-
 **Available Commands** (use sparingly):
 1. **Install dependencies**: `bun install` or `bun add [package]`
-2. **Build** (if needed): `bun run build`
-3. **Type check** (if needed): `bun run type-check`
-4. **Lint** (if needed): `bun run lint`
 
-**DO NOT RUN**:
+**Do not run**:
 - ❌ `bun dev` - Server is already running
-- ❌ `npm start` - Server is already running  
+- ❌ `npm start` - Server is already running 
+- ❌ `bun run build` - Will break the .next config, do not build the app via any method 
 - ❌ Any server start/stop commands
 
 ## ⚠️ Important Guidelines
 
-1. **Dev Server Management** ⚠️ **MOST IMPORTANT**
-   - The dev server is ALWAYS RUNNING - never start, stop, or restart it
-   - Only edit code files - the server auto-reloads changes
-   - Focus on building, not running infrastructure
-
-2. **Keep it Organized**
+1. **Keep it Organized**
    - Build your app directly in `app/page.tsx`
    - Only add Whop integration if specifically needed
    - Focus on creating a great user experience
 
-3. **Use Modern React**
+2. **Use Modern React**
    - React 19 with hooks
    - Server and client components as needed
    - TypeScript for type safety
 
-4. **Styling**
+3. **Styling**
    - Use Styled Components for styling
    - Follow the modern UI principles above
    - Create cohesive, polished interfaces
 
-5. **API Integration** (Optional)
+4. **API Integration** (Optional)
    - Only add Whop APIs if the app needs them
    - Use environment variables for API keys
    - Handle authentication only if required
