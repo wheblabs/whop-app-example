@@ -77,57 +77,143 @@ export default function ThreeCanvas() {
   };
 
 
+  // Function to update node and text scales based on camera distance
+  const updateNodeScales = () => {
+    if (!cameraRef.current || !timelineGroupRef.current) return;
+    
+    const defaultCameraDistance = 10; // Reference distance for scale = 1
+    const currentCameraDistance = cameraRef.current.position.z;
+    const scaleMultiplier = currentCameraDistance / defaultCameraDistance;
+    
+    timelineGroupRef.current.traverse((child) => {
+      if (child.userData?.isTimelineNode) {
+        // Scale spheres to maintain consistent size
+        child.scale.setScalar(scaleMultiplier);
+      } else if (child.userData?.isTextSprite) {
+        // Scale text sprites to maintain consistent size and readability
+        const baseWidth = child.userData.baseWidth || 1.0;
+        const baseHeight = child.userData.baseHeight || 1.0;
+        const textScale = scaleMultiplier;
+        child.scale.set(baseWidth * textScale, baseHeight * textScale, 1);
+        
+        // Update position to maintain consistent visual offset from node
+        const nodePosition = child.userData.nodePosition;
+        if (nodePosition) {
+          const baseOffset = 0.3;
+          const scaledOffset = baseOffset * scaleMultiplier;
+          const spriteWidth = baseWidth * textScale;
+          child.position.set(
+            nodePosition.x + scaledOffset + spriteWidth / 2,
+            nodePosition.y,
+            nodePosition.z
+          );
+        }
+      }
+    });
+  };
+
+
 
   const createTimelineNode = (event: Event, position: THREE.Vector3, level: number = 0, parentTime?: string): THREE.Group => {
     const group = new THREE.Group();
     
-    // Create main event node (sphere)
-    const nodeGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    // Create main event node (sphere) with initial size
+    const baseRadius = 0.1;
+    const nodeGeometry = new THREE.SphereGeometry(baseRadius, 16, 16);
     const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
     node.position.copy(position);
+    
+    // Add userData to identify this as a scalable node
+    node.userData = { isTimelineNode: true, baseRadius };
+    
     group.add(node);
 
-    // Create text label using canvas texture
+    // Create high-resolution text label using canvas texture
     const createTextTexture = (text: string) => {
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d')!;
       
-      // Set high-resolution canvas size for crisp text on all screens
-      const pixelRatio = window.devicePixelRatio || 1;
-      const baseWidth = 256;
-      const baseHeight = 64;
-      canvas.width = baseWidth * pixelRatio;
-      canvas.height = baseHeight * pixelRatio;
-      canvas.style.width = baseWidth + 'px';
-      canvas.style.height = baseHeight + 'px';
+      // Calculate optimal canvas size based on text and pixel ratio
+      const pixelRatio = Math.min(window.devicePixelRatio, 2); // Cap at 2x for performance
+      const fontSize = 16;
+      const padding = 8;
       
-      // Scale context to match pixel ratio
+      // Measure text to get accurate canvas size
+      context.font = `${fontSize}px Arial, sans-serif`;
+      const metrics = context.measureText(text);
+      const textWidth = metrics.width;
+      const textHeight = fontSize;
+      
+      // Set canvas size with pixel ratio scaling
+      const canvasWidth = Math.ceil(textWidth + padding * 2);
+      const canvasHeight = Math.ceil(textHeight + padding * 2);
+      
+      canvas.width = canvasWidth * pixelRatio;
+      canvas.height = canvasHeight * pixelRatio;
+      canvas.style.width = canvasWidth + 'px';
+      canvas.style.height = canvasHeight + 'px';
+      
+      // Scale context for high DPI
       context.scale(pixelRatio, pixelRatio);
       
-      // Configure text style
-      context.fillStyle = 'rgba(0, 0, 0, 0)'; // Transparent background
-      context.fillRect(0, 0, baseWidth, baseHeight);
-      context.fillStyle = 'white';
-      context.font = '16px Arial, sans-serif';
+      // Configure text rendering for maximum quality
       context.textAlign = 'left';
-      context.textBaseline = 'middle';
+      context.textBaseline = 'top';
+      context.font = `${fontSize}px Arial, sans-serif`;
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = 'high';
+      
+      // Clear canvas with transparent background
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      
+      // Draw semi-transparent background
+      context.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      context.fillRect(0, 0, canvasWidth, canvasHeight);
       
       // Draw text
-      context.fillText(text, 8, baseHeight / 2);
+      context.fillStyle = 'white';
+      context.fillText(text, padding, padding);
       
-      return new THREE.CanvasTexture(canvas);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.format = THREE.RGBAFormat;
+      
+      return { texture, width: canvasWidth, height: canvasHeight };
     };
     
-    const textTexture = createTextTexture(event.name);
+    const textResult = createTextTexture(event.name);
     const textMaterial = new THREE.SpriteMaterial({ 
-      map: textTexture, 
+      map: textResult.texture, 
       transparent: true,
       alphaTest: 0.1
     });
     const textSprite = new THREE.Sprite(textMaterial);
-    textSprite.position.set(position.x + 1.4, position.y - 0.03, position.z);
-    textSprite.scale.set(2.5, 0.7, 1); // Scale sprite appropriately
+    
+    // Calculate sprite dimensions for left alignment
+    const spriteWidth = textResult.width * 0.01; // Convert pixels to world units
+    const spriteHeight = textResult.height * 0.01;
+    
+    // Calculate offset that scales with zoom level
+    const baseOffset = 0.3; // Base offset at default camera distance (Z=10)
+    const defaultCameraDistance = 10;
+    const currentCameraDistance = cameraRef.current?.position.z || defaultCameraDistance;
+    const scaledOffset = baseOffset * (currentCameraDistance / defaultCameraDistance);
+    
+    textSprite.position.set(position.x + scaledOffset + spriteWidth / 2, position.y, position.z);
+    textSprite.scale.set(spriteWidth, spriteHeight, 1);
+    
+    // Add userData to identify this as a scalable text sprite with offset info
+    textSprite.userData = { 
+      isTextSprite: true, 
+      baseScale: 1.0,
+      baseWidth: spriteWidth,
+      baseHeight: spriteHeight,
+      baseOffset: scaledOffset,
+      nodePosition: position.clone()
+    };
+    
     group.add(textSprite);
 
     // Add downstream events
@@ -272,6 +358,9 @@ export default function ThreeCanvas() {
 
     // Apply pan offset
     timelineGroupRef.current.position.set(panOffset.x, panOffset.y, 0);
+    
+    // Update node scales for current camera distance
+    updateNodeScales();
   };
 
   useEffect(() => {
@@ -341,7 +430,7 @@ export default function ThreeCanvas() {
       raycaster.ray.intersectPlane(plane, intersection);
       
       // Calculate zoom factor and new camera Z position
-      const zoomSpeed = 0.025;
+      const zoomSpeed = 0.03;
       const zoomFactor = event.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
       const currentZ = cameraRef.current.position.z;
       const newZ = Math.max(1, Math.min(50, currentZ * zoomFactor));
@@ -359,6 +448,9 @@ export default function ThreeCanvas() {
       // Apply the new position and zoom
       cameraRef.current.position.set(newCameraPos.x, newCameraPos.y, newZ);
       setCameraZ(newZ);
+      
+      // Update node scales to maintain consistent size
+      updateNodeScales();
     };
 
     // Pan handlers
@@ -370,13 +462,23 @@ export default function ThreeCanvas() {
 
     const handleMouseMove = (event: MouseEvent) => {
       // Handle panning
-      if (!isPanningRef.current) return;
+      if (!isPanningRef.current || !cameraRef.current || !mountRef.current) return;
 
       const deltaX = event.clientX - lastMousePosRef.current.x;
       const deltaY = event.clientY - lastMousePosRef.current.y;
       
-      // Convert screen space movement to world space
-      const panSensitivity = 0.01;
+      // Calculate pan sensitivity based on camera distance and viewport size
+      // When camera is closer (lower Z), movement should be less sensitive
+      const containerHeight = mountRef.current.clientHeight;
+      const fov = cameraRef.current.fov * (Math.PI / 180); // Convert to radians
+      const cameraDistance = cameraRef.current.position.z;
+      
+      // Calculate world height visible at current camera distance
+      const visibleHeight = 2 * Math.tan(fov / 2) * cameraDistance;
+      
+      // Pan sensitivity scales with how much world space is visible
+      const panSensitivity = visibleHeight / containerHeight;
+      
       setPanOffset(prev => ({
         x: prev.x + deltaX * panSensitivity,
         y: prev.y - deltaY * panSensitivity // Invert Y for correct direction
@@ -395,6 +497,7 @@ export default function ThreeCanvas() {
       if (cameraRef.current) {
         cameraRef.current.position.set(0, 0, 10);
         setCameraZ(10);
+        updateNodeScales();
       }
     };
 
@@ -493,6 +596,7 @@ const CanvasContainer = styled.div`
   position: relative;
   background: #000000;
 `;
+
 
 const RotateButton = styled.button`
   position: absolute;
