@@ -16,7 +16,7 @@
 		"@whop-apps/sdk": "0.0.1-canary.111",
 		"@whop/api": "^0.0.21",
 		"lucide-react": "0.518.0",
-		"next": "15.3.2",
+		"next": "15.3.5",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"recharts": "^2.15.3",
