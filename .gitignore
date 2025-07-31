@@ -43,3 +43,12 @@ yarn-error.log*
 next-env.d.ts
 
 .env.development
+
+# SQLite database files
+/data/
+*.db
+*.db-shm
+*.db-wal
+
+# Prisma
+/prisma/migrations/

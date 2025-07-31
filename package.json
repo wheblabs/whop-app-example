@@ -7,11 +7,12 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"prisma:db:push": "dotenv -e .env.local -- pnpm prisma db push",
-		"prisma:generate": "dotenv -e .env.local -- pnpm prisma generate",
-		"prisma:migrate:dev": "dotenv -e .env.local -- pnpm prisma migrate dev"
+		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
+		"db:studio": "prisma studio"
 	},
 	"dependencies": {
+		"@prisma/client": "^6.2.0",
 		"@vercel/functions": "^2.0.3",
 		"@whop-apps/sdk": "0.0.1-canary.111",
 		"@whop/api": "^0.0.21",
@@ -29,6 +30,7 @@
 		"@types/react-dom": "^19",
 		"@whop-apps/dev-proxy": "0.0.1-canary.116",
 		"dotenv-cli": "^8.0.0",
+		"prisma": "^6.2.0",
 		"typescript": "^5"
 	},
 	"packageManager": "pnpm@8.7.0+sha512.1d61f8c10e8a5a5dbfbddea0f1f5efb7dbd5177223073aec953cf230aa46416884b9427a6421dba78f28ad0f93fbede38ba57083237b350243de6b1e3a8ce71d"

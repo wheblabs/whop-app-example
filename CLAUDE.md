@@ -13,6 +13,7 @@ This template is designed as a basic app. All app logic happens in the main `app
 ### Project Setup
 - **Framework**: Next.js 15+ with React 19 and TypeScript
 - **Styling**: Styled-components v6
+- **Database**: SQLite with Prisma ORM - LOCAL ONLY, no external databases
 - **Package Manager**: bun (use `bun add`, `bun install`, etc. for dependencies)
 - **Dev Server**: Always running on localhost:3000 with whop-proxy - No need to start or stop it. Do not run `bun run build` or any build command.
 - **Template**: Based on whop-nextjs-app-template
@@ -289,7 +290,15 @@ app/
 │   └── webhooks/route.ts                 # Webhook handlers (if needed)
 ├── components/                           # Reusable components
 └── lib/
-    └── whop-api.ts                       # Whop API client setup (if needed)
+    ├── whop-api.ts                       # Whop API client setup (if needed)
+    └── db/
+        ├── index.ts                      # Prisma client initialization
+        └── schema.prisma                 # Prisma schema definitions
+data/                                     # SQLite database files (auto-created)
+└── app.db                                # Main application database
+prisma/                                   # Prisma directory
+├── schema.prisma                         # Database schema
+└── migrations/                           # Migration files (auto-generated)
 ```
 
 ### 2. Main App Page (`app/page.tsx`)
@@ -433,8 +442,6 @@ WHOP_COMPANY_ID=your_company_id_here
 
 # Additional services (as needed)
 OPENAI_API_KEY=your_openai_api_key
-DATABASE_URL=your_database_url
-DIRECT_URL=your_direct_database_url
 ```
 
 ### 8. Solana integration / wallet data
@@ -476,12 +483,293 @@ const fetchWithFallback = async (address) => {
 };
 ```
 
+### 9. Database - SQLite with Prisma ORM ONLY
+
+**CRITICAL**: This app runs on a persistent VM environment. You MUST use local SQLite databases for ALL data storage needs. NEVER connect to external databases. Always use Prisma ORM for type-safe database operations.
+
+#### Why SQLite + Prisma?
+- **Local Storage**: All data is stored locally on the VM
+- **Type Safety**: Prisma provides full TypeScript support with generated types
+- **No External Dependencies**: No network connections to external databases
+- **Modern DX**: Auto-completion, type inference, and compile-time checks
+- **Perfect for Whop Apps**: Ideal for single-tenant app instances
+
+#### Setting Up Prisma with SQLite
+
+**Installation:**
+All required dependencies are already included in the template's package.json:
+- `@prisma/client` - The Prisma client
+- `prisma` - CLI for migrations and schema management
+
+Just run `bun install` to get started.
+
+**Database Schema (`prisma/schema.prisma`):**
+```prisma
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/app.db"
+}
+
+// Users table
+model User {
+  id         Int       @id @default(autoincrement())
+  whopUserId String    @unique @map("whop_user_id")
+  email      String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  settings   Setting[]
+  todos      Todo[]
+  
+  @@map("users")
+}
+
+// Settings table
+model Setting {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  key       String
+  value     Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, key])
+  @@map("settings")
+}
+
+// Example: todos table
+model Todo {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String
+  completed Boolean  @default(false)
+  priority  String   @default("medium")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id])
+  
+  @@map("todos")
+}
+```
+
+**Database Connection (`lib/db/index.ts`):**
+```typescript
+import { PrismaClient } from '@prisma/client';
+import { join } from 'path';
+import { mkdirSync } from 'fs';
+
+// Ensure data directory exists
+const dataDir = join(process.cwd(), 'data');
+try {
+  mkdirSync(dataDir, { recursive: true });
+} catch (e) {}
+
+// Create a singleton instance of PrismaClient
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+// Export the prisma client
+export default prisma;
+```
+
+**Prisma Configuration:**
+The Prisma configuration is handled in the `prisma/schema.prisma` file (shown above).
+
+**Initial Setup:**
+```bash
+# Generate Prisma client
+bun prisma generate
+
+# Create initial migration
+bun prisma migrate dev --name init
+
+# Apply migrations in production
+bun prisma migrate deploy
+```
+
+**Usage Examples:**
+```typescript
+import prisma from '@/lib/db';
+import { Prisma } from '@prisma/client';
+
+// Get or create user
+export async function getOrCreateUser(whopUserId: string) {
+  const user = await prisma.user.upsert({
+    where: { whopUserId },
+    update: {},
+    create: { whopUserId },
+  });
+  
+  return user;
+}
+
+// Get user todos with type safety
+export async function getUserTodos(userId: number) {
+  return prisma.todo.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+// Create todo with automatic typing
+export async function createTodo(data: Prisma.TodoCreateInput) {
+  return prisma.todo.create({
+    data,
+  });
+}
+
+// Update setting with JSON support
+export async function updateSetting(userId: number, key: string, value: any) {
+  await prisma.setting.upsert({
+    where: {
+      userId_key: { userId, key },
+    },
+    update: { value },
+    create: { userId, key, value },
+  });
+}
+
+// Complex query with relations
+export async function getUserWithSettings(whopUserId: string) {
+  return prisma.user.findUnique({
+    where: { whopUserId },
+    include: {
+      settings: true,
+      todos: {
+        where: { completed: false },
+        orderBy: { priority: 'desc' },
+      },
+    },
+  });
+}
+```
+
+#### Prisma Best Practices
+
+1. **ALWAYS use Prisma ORM** - Never write raw SQL unless using `prisma.$queryRaw` for specific needs
+2. **Store databases in `./data/` directory** - This ensures persistence
+3. **Define schemas with proper types** - Prisma generates TypeScript types automatically
+4. **Use relations for complex queries** - Better than manual joins
+5. **Run migrations with Prisma CLI** - `bun prisma migrate dev`
+6. **Use transactions for consistency**
+7. **Leverage type-safe queries** - Full IntelliSense support
+
+#### Common Patterns
+
+**Batch operations with transactions:**
+```typescript
+await prisma.$transaction(async (tx) => {
+  const user = await tx.user.create({
+    data: { whopUserId },
+  });
+  
+  await tx.todo.createMany({
+    data: [
+      { userId: user.id, title: 'Welcome!' },
+      { userId: user.id, title: 'Get started' },
+    ],
+  });
+});
+```
+
+**Pagination with type safety:**
+```typescript
+export async function getPaginatedTodos(userId: number, page = 1, limit = 10) {
+  const skip = (page - 1) * limit;
+  
+  const [items, count] = await Promise.all([
+    prisma.todo.findMany({
+      where: { userId },
+      skip,
+      take: limit,
+    }),
+    prisma.todo.count({
+      where: { userId },
+    }),
+  ]);
+  
+  return {
+    items,
+    total: count,
+    page,
+    pages: Math.ceil(count / limit),
+  };
+}
+```
+
+**Full-text search with Prisma:**
+```typescript
+// Search function using Prisma's raw query for FTS5
+export async function searchTodos(userId: number, query: string) {
+  // For simple contains search
+  return prisma.todo.findMany({
+    where: {
+      userId,
+      OR: [
+        { title: { contains: query } },
+        { content: { contains: query } },
+      ],
+    },
+  });
+  
+  // For advanced FTS5 search (requires raw query)
+  return prisma.$queryRaw`
+    SELECT t.id, t.title, t.completed, t.priority
+    FROM todos t
+    JOIN todos_fts ON todos_fts.id = t.id
+    WHERE t.user_id = ${userId}
+    AND todos_fts MATCH ${query}
+    ORDER BY rank
+  `;
+}
+```
+
+#### Migration Commands
+```bash
+# Generate Prisma client types
+bun prisma generate
+
+# Create a new migration
+bun prisma migrate dev --name migration_name
+
+# Apply migrations in production
+bun prisma migrate deploy
+
+# Open Prisma Studio to view database
+bun prisma studio
+
+# Reset database (development only)
+bun prisma migrate reset
+```
+
+**REMEMBER**: External databases are NEVER allowed. All data must be stored locally using SQLite with Prisma ORM.
+
 ## 🚀 Building The App
 
 Build the app directly in `app/page.tsx`. You can:
 - Create any kind of web application
 - Use React components and hooks
 - Style with Styled Components at the bottom of each component's file
+- Store all data locally using SQLite (in `./data/` directory)
 - Add API routes in `app/api/` if needed
 - Create reusable components in `components/`
 
@@ -503,17 +791,23 @@ Build the app directly in `app/page.tsx`. You can:
    - Only add Whop integration if specifically needed
    - Focus on creating a great user experience
 
-2. **Use Modern React**
+2. **Database Requirements** (CRITICAL)
+   - **ALWAYS use local SQLite with Prisma ORM** - Never connect to external databases
+   - Store all data locally in `./data/` directory
+   - Use Prisma ORM for type-safe database operations
+   - This app runs on a persistent VM - local storage is permanent
+
+3. **Use Modern React**
    - React 19 with hooks
    - Server and client components as needed
    - TypeScript for type safety
 
-3. **Styling**
+4. **Styling**
    - Use Styled Components for styling
    - Follow the modern UI principles above
    - Create cohesive, polished interfaces
 
-4. **API Integration** (Optional)
+5. **API Integration** (Optional)
    - Only add Whop APIs if the app needs them
    - Use environment variables for API keys
    - Handle authentication only if required
