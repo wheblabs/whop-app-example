@@ -316,6 +316,39 @@ export default function Page() {
 ```
 
 ### 3. Styled Components Best Practices
+
+**CRITICAL: Preventing the "filled" Attribute Error**
+
+When using styled-components, you may encounter this error:
+```
+Received `false` for a non-boolean attribute `filled`.
+If you want to write it to the DOM, pass a string instead: filled="false" or filled={value.toString()}.
+```
+
+This happens when styled-components passes custom props to DOM elements. **ALWAYS use the `$` prefix for custom props to prevent this error:**
+
+```typescript
+// ❌ BAD - This will cause the error
+const Button = styled.button<{ filled?: boolean }>`
+  background: ${props => props.filled ? '#3B82F6' : 'transparent'};
+`;
+
+// ✅ GOOD - Using $ prefix prevents the error
+const Button = styled.button<{ $filled?: boolean }>`
+  background: ${props => props.$filled ? '#3B82F6' : 'transparent'};
+`;
+
+// Usage
+<Button $filled={true}>Click me</Button>
+```
+
+**Common prop names that need the $ prefix:**
+- `$filled`, `$active`, `$selected`, `$loading`, `$disabled`
+- `$size`, `$variant`, `$color`, `$elevated`, `$interactive`
+- Any custom boolean, object, or function props
+
+**Rule of thumb:** If a prop is not a valid HTML attribute and is only used for styling, prefix it with `$`.
+
 ```typescript
 import styled from 'styled-components';
 
@@ -330,21 +363,28 @@ const Container = styled.div`
   }
 `;
 
-const Card = styled.div`
+const Card = styled.div<{ $elevated?: boolean; $interactive?: boolean }>`
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 24px;
   transition: all 0.2s ease;
   
-  &:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
-  }
+  ${props => props.$elevated && `
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  `}
+  
+  ${props => props.$interactive && `
+    cursor: pointer;
+    &:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+  `}
 `;
 
-// Group related styles
-const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
+// Group related styles - note the $ prefix for variant
+const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   /* Base styles */
   padding: 8px 16px;
   border-radius: 6px;
@@ -355,7 +395,7 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   border: 1px solid transparent;
   
   /* Variant styles */
-  ${props => props.variant === 'primary' && `
+  ${props => props.$variant === 'primary' && `
     background: var(--accent);
     color: white;
     
@@ -366,7 +406,7 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
     }
   `}
   
-  ${props => props.variant === 'secondary' && `
+  ${props => props.$variant === 'secondary' && `
     background: transparent;
     color: var(--text-primary);
     border-color: var(--border);
@@ -376,6 +416,34 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
       background: var(--surface-hover);
     }
   `}
+`;
+
+// Status badge with $ prefix
+const StatusBadge = styled.span<{ $status: 'success' | 'warning' | 'error' }>`
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  
+  ${props => {
+    switch (props.$status) {
+      case 'success':
+        return `
+          background: rgba(16, 185, 129, 0.2);
+          color: #34D399;
+        `;
+      case 'warning':
+        return `
+          background: rgba(245, 158, 11, 0.2);
+          color: #FCD34D;
+        `;
+      case 'error':
+        return `
+          background: rgba(239, 68, 68, 0.2);
+          color: #F87171;
+        `;
+    }
+  }}
 `;
 ```
 
