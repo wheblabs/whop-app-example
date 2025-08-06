@@ -5,6 +5,11 @@ import { loadEnvConfig } from '@next/env';
 const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
+// Debug log to verify environment variables are loaded
+console.log('Next.js Config - Environment Variables:');
+console.log('WHOP_API_KEY:', process.env.WHOP_API_KEY ? '[REDACTED]' : 'undefined');
+console.log('NEXT_PUBLIC_WHOP_APP_ID:', process.env.NEXT_PUBLIC_WHOP_APP_ID);
+
 const nextConfig: NextConfig = {
 	env: {
 		WHOP_API_KEY: process.env.WHOP_API_KEY || '',

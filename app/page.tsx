@@ -4,6 +4,9 @@ import styled from "styled-components";
 import Image from "next/image";
 
 export default function Page() {
+	// Log environment variable to verify it's loaded
+	console.log('NEXT_PUBLIC_WHOP_APP_ID:', process.env.NEXT_PUBLIC_WHOP_APP_ID);
+	
 	return (
 		<Container>
 			<Content>
