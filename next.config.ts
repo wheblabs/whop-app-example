@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
 	env: {
 		WHOP_API_KEY: process.env.WHOP_API_KEY || '',
 		NEXT_PUBLIC_WHOP_APP_ID: process.env.NEXT_PUBLIC_WHOP_APP_ID || '',
+		NEXT_PUBLIC_WHOP_AGENT_USER_ID: process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID || '',
+		NEXT_PUBLIC_WHOP_COMPANY_ID: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID || '',
 	},
 	compiler: {
 		styledComponents: true,

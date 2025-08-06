@@ -454,12 +454,12 @@ import { WhopServerSdk, makeUserTokenVerifier } from "@whop/api";
 
 export const whopApi = WhopServerSdk({
   appApiKey: process.env.WHOP_API_KEY ?? "fallback",
-  onBehalfOfUserId: process.env.WHOP_AGENT_USER_ID,
-  companyId: process.env.WHOP_COMPANY_ID,
+  onBehalfOfUserId: process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID,
+  companyId: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID,
 });
 
 export const verifyUserToken = makeUserTokenVerifier({
-  appId: process.env.WHOP_APP_ID ?? "fallback",
+  appId: process.env.NEXT_PUBLIC_WHOP_APP_ID ?? "fallback",
   dontThrow: true,
 });
 ```
@@ -502,11 +502,11 @@ Only needed if using Whop APIs:
 ```env
 # Whop Integration (Only if needed)
 WHOP_API_KEY=your_whop_api_key_here
-WHOP_AGENT_USER_ID=your_whop_agent_user_id_here
-WHOP_APP_ID=your_whop_app_id_here
+NEXT_PUBLIC_WHOP_AGENT_USER_ID=your_whop_agent_user_id_here
+NEXT_PUBLIC_WHOP_APP_ID=your_whop_app_id_here
 
 # Optional
-WHOP_COMPANY_ID=your_company_id_here
+NEXT_PUBLIC_WHOP_COMPANY_ID=your_company_id_here
 
 # Additional services (as needed)
 OPENAI_API_KEY=your_openai_api_key

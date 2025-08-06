@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 // Check if we have the required Whop environment variables
 const hasWhopConfig = !!(
 	process.env.WHOP_API_KEY && 
-	process.env.WHOP_APP_ID && 
+	process.env.NEXT_PUBLIC_WHOP_APP_ID && 
 	process.env.WHOP_API_KEY !== "fallback"
 );
 
