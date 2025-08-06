@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { WhopThemeProvider } from "@whop-apps/sdk";
+import { WhopIframeSdkProvider } from "@whop/react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -37,7 +37,7 @@ export default function RootLayout({
 				style={{ fontSmooth: "antialiased", WebkitFontSmoothing: "antialiased" }}
 			>
 				{hasWhopConfig ? (
-					<WhopThemeProvider>{children}</WhopThemeProvider>
+					<WhopIframeSdkProvider>{children}</WhopIframeSdkProvider>
 				) : (
 					children
 				)}
