@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
+import { loadEnvConfig } from '@next/env';
+
+// Load environment variables from the system
+const projectDir = process.cwd();
+loadEnvConfig(projectDir);
 
 const nextConfig: NextConfig = {
+	env: {
+		WHOP_API_KEY: process.env.WHOP_API_KEY || '',
+		NEXT_PUBLIC_WHOP_APP_ID: process.env.NEXT_PUBLIC_WHOP_APP_ID || '',
+	},
 	compiler: {
 		styledComponents: true,
 	},

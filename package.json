@@ -12,6 +12,7 @@
 		"db:studio": "prisma studio"
 	},
 	"dependencies": {
+		"@next/env": "^15.4.5",
 		"@prisma/client": "^6.2.0",
 		"@vercel/functions": "^2.0.3",
 		"@whop-apps/sdk": "0.0.1-canary.111",
