@@ -16,7 +16,7 @@
 		"@prisma/client": "^6.2.0",
 		"@vercel/functions": "^2.0.3",
 		"@whop-apps/sdk": "0.0.1-canary.111",
-		"@whop/api": "^0.0.21",
+		"@whop/api": "^0.0.42",
 		"@whop/react": "^0.2.34",
 		"lucide-react": "0.518.0",
 		"next": "^15.4.6",
