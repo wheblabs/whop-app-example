@@ -31,10 +31,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "touch hellobrent && echo 'hellobrent'"
-          },
-          {
-            "type": "command",
             "command": "bun run tsc --noEmit --incremental --tsBuildInfoFile .tsbuildinfo"
           }
         ]
