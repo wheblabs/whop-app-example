@@ -17,11 +17,28 @@
       "WebSearch",
       "Write"
     ],
-	"deny": [
-		"Bash(curl:*)",
-		"Bash(wget:*)",
-		"Bash(echo .env*)",
-		"Read(.env*)"
-	]
+    "deny": [
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(echo .env*)",
+      "Read(.env*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch hellobrent && echo 'hellobrent'"
+          },
+          {
+            "type": "command",
+            "command": "bun run tsc --noEmit --incremental --tsBuildInfoFile .tsbuildinfo"
+          }
+        ]
+      }
+    ]
   }
 }
