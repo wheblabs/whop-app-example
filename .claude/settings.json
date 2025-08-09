@@ -17,14 +17,12 @@
       "WebSearch",
       "Write"
     ],
-    "deny": [
-      "Bash(curl:*)",
-      "Bash(wget:*)"
-    ]
+    "deny": ["Bash(curl:*)", "Bash(wget:*)"]
   },
   "hooks": {
-    "Stop": [
+    "PostToolUse": [
       {
+        "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
             "type": "command",
