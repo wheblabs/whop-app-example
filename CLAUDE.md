@@ -330,13 +330,18 @@ const mockSuggestions = ["Suggestion 1", "Suggestion 2"];
 **Example - RIGHT (Always do this):**
 ```typescript
 // ✅ ALWAYS use real data from Whop SDK
-import { validateToken } from "@whop-apps/sdk";
-import { WhopAPI } from "@whop-apps/sdk";
+import { verifyUserToken, whopSdk } from "@/lib/whop-api";
+import { headers } from "next/headers";
 
-const { userId } = await validateToken({ headers });
-const userInfo = await WhopAPI.me({ token }).GET("/me");
-const userName = userInfo.data.username;
-const userEmail = userInfo.data.email;
+// Get the actual logged-in user
+const headersList = await headers();
+const { userId } = await verifyUserToken(headersList);
+
+// Get real user information from Whop
+const userInfo = await whopSdk.withUser(userId).users.retrieveUser({ 
+  id: userId 
+});
+const userName = userInfo.data?.username || userInfo.data?.email;
 
 // Get real suggestions from database
 const suggestions = await prisma.suggestion.findMany({
@@ -514,109 +519,51 @@ const StatusBadge = styled.span<{ $status: 'success' | 'warning' | 'error' }>`
 `;
 ```
 
-### 4. Whop API Setup - Three Modes
+### 4. Whop SDK Quick Reference
 
-#### Using @whop-apps/sdk (Modern Approach)
-The SDK supports three API modes:
+#### 📚 Accessing Full SDK Documentation
 
-**App Mode** - Uses your app's API key:
-```typescript
-import { WhopAPI } from "@whop-apps/sdk";
+**IMPORTANT**: Complete Whop SDK documentation is stored separately to maintain performance.
 
-// Automatically uses WHOP_API_KEY env variable
-const companyInfo = await WhopAPI.app().GET("/app/companies/{id}", {
-  params: { path: { id: "biz_XXX" } }
-});
+**To access the full Whop SDK documentation:**
+1. **Read the file**: `/whop-docs.md` in this repository contains the complete official docs
+2. **Source**: The docs are from https://dev.whop.com/llms-full.txt
+3. **When to read it**: Reference this file when you need specific SDK methods, API endpoints, or detailed implementation examples
 
-// Or manually pass the key
-const api = WhopAPI.app({ apiKey: "your_key" });
-```
+**How I should use the documentation:**
+- When building any Whop app feature, I will first check `/whop-docs.md` for the correct SDK methods
+- I will reference it for authentication patterns, API endpoints, and webhook handling
+- I will use it to ensure I'm using the latest and correct SDK syntax
 
-**Company Mode** - Uses company's API key:
-```typescript
-const userInfo = await WhopAPI.company().GET("/company/users/{id}", {
-  params: { path: { id: "user_XXX" } }
-});
-```
-
-**Me Mode** - Uses user's access token:
-```typescript
-// Token from /token endpoint or headers
-const meInfo = await WhopAPI.me({ token: userToken }).GET("/me");
-```
-
-#### Using @whop/api (Server SDK)
+#### Basic Setup (`lib/whop-api.ts`)
 ```typescript
 import { WhopServerSdk, makeUserTokenVerifier } from "@whop/api";
 
-// Initialize the server SDK
-export const whopApi = WhopServerSdk({
+export const whopSdk = WhopServerSdk({
   appId: process.env.NEXT_PUBLIC_WHOP_APP_ID,
   appApiKey: process.env.WHOP_API_KEY,
   onBehalfOfUserId: process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID,
   companyId: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID,
 });
 
-// Token verifier for authentication
 export const verifyUserToken = makeUserTokenVerifier({
   appId: process.env.NEXT_PUBLIC_WHOP_APP_ID,
-  dontThrow: true,  // Won't throw on invalid token
+  dontThrow: true,
 });
 ```
 
-#### Token Validation (from @whop-apps/sdk)
-```typescript
-import { validateToken } from "@whop-apps/sdk";
-import { headers } from "next/headers";
+### 5. Authentication Pattern
 
-export default async function Page() {
-  // Validates the whop_user_token cookie
-  const { userId } = await validateToken({ headers });
-  
-  // User is authenticated and has access to your app
-  return <div>Welcome {userId}</div>;
-}
-```
-
-### 5. Authentication Patterns
-
-#### Server Component Authentication
 ```typescript
 import { headers } from "next/headers";
 import { verifyUserToken } from "@/lib/whop-api";
-// OR
-import { validateToken } from "@whop-apps/sdk";
 
 export default async function Page() {
   const headersList = await headers();
-  
-  // Using @whop/api
   const { userId } = await verifyUserToken(headersList);
   
-  // OR using @whop-apps/sdk
-  const { userId } = await validateToken({ headers: headersList });
-  
-  // User is authenticated
-  return <div>Hello user {userId}</div>;
-}
-```
-
-#### OAuth Flow
-```typescript
-import { whopApi } from "@/lib/whop-api";
-
-// Generate authorization URL
-const authUrl = whopApi.oauth.getAuthorizationUrl({
-  redirectUri: "https://yourapp.com/callback",
-  scopes: ["user:read", "company:read"],
-  state: "your-state-data"
-});
-
-// Handle OAuth callback
-export async function handleCallback(code: string) {
-  const tokens = await whopApi.oauth.exchangeCodeForToken(code);
-  // Store tokens securely
-  return tokens;
+  // User is authenticated - now get their real data
+  return <div>Welcome {userId}</div>;
 }
 ```
 
@@ -1231,3 +1178,15 @@ const Td = styled.td`
 5. **Polish relentlessly** - The difference is in the details
 
 Remember: You're creating apps that should feel cutting-edge and professional. Channel the design sensibilities of companies like Vercel, Linear, Raycast, and Arc. Make interfaces that are dense with information yet feel spacious, complex yet intuitive, powerful yet approachable.
+
+## 📖 Additional Documentation
+
+**Whop SDK Full Documentation**: The complete official Whop SDK documentation is available in `/whop-docs.md`. This file contains:
+- All SDK methods and their usage
+- Authentication patterns and examples
+- GraphQL API documentation
+- Webhook handling details
+- Code examples in multiple languages
+- Rate limits and best practices
+
+**When to reference whop-docs.md**: Whenever you need to implement any Whop SDK functionality, always check this file first to ensure you're using the correct and latest API methods.
