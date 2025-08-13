@@ -338,6 +338,8 @@ const headersList = await headers();
 const { userId } = await verifyUserToken(headersList);
 
 // Get real user information from Whop
+// ⚠️ IMPORTANT: Do NOT use whopSdk.users.getCurrentUser() - it's broken!
+// Use retrieveUser with the userId instead:
 const userInfo = await whopSdk.withUser(userId).users.retrieveUser({ 
   id: userId 
 });
@@ -534,6 +536,17 @@ const StatusBadge = styled.span<{ $status: 'success' | 'warning' | 'error' }>`
 - When building any Whop app feature, I will first check `/whop-docs.md` for the correct SDK methods
 - I will reference it for authentication patterns, API endpoints, and webhook handling
 - I will use it to ensure I'm using the latest and correct SDK syntax
+
+#### ⚠️ CRITICAL SDK WARNING
+**DO NOT USE**: `whopSdk.users.getCurrentUser()` - This method is currently broken!
+
+**USE INSTEAD**: 
+```typescript
+// After getting userId from verifyUserToken
+const userInfo = await whopSdk.withUser(userId).users.retrieveUser({ 
+  id: userId 
+});
+```
 
 #### Basic Setup (`lib/whop-api.ts`)
 ```typescript

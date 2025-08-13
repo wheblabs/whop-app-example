@@ -2,6 +2,13 @@
 
 This file contains the complete official Whop SDK documentation from https://dev.whop.com/llms-full.txt
 
+## ⚠️ CRITICAL KNOWN ISSUES
+
+### Broken Methods - DO NOT USE
+1. **`whopSdk.users.getCurrentUser()`** - Currently broken, returns errors
+   - **Alternative**: Use `whopSdk.withUser(userId).users.retrieveUser({ id: userId })` instead
+   - Always get the userId first using `verifyUserToken(headers)`
+
 **To update this documentation:**
 1. Go to https://dev.whop.com/llms-full.txt
 2. Copy the entire content
