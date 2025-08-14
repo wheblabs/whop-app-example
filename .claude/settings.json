@@ -40,7 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun run tsc --noEmit"
+            "command": "bash ./strict-lint.sh"
           }
         ]
       }
