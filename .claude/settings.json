@@ -17,7 +17,10 @@
       "WebSearch",
       "Write"
     ],
-    "deny": ["Bash(curl:*)", "Bash(wget:*)"]
+    "deny": [
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ]
   },
   "hooks": {
     "PostToolUse": [
@@ -27,6 +30,17 @@
           {
             "type": "command",
             "command": "bun run tsc --noEmit --incremental --tsBuildInfoFile .tsbuildinfo"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run tsc --noEmit"
           }
         ]
       }
