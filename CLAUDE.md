@@ -661,45 +661,56 @@ export default function Component() {
 
 ### 7. Environment Variables
 
-#### Setting Up Environment Variables
+#### Pre-configured Whop Environment Variables
 
-**IMPORTANT**: Users cannot edit files directly. When environment variables are needed:
-1. **ASK the user** for their API keys and credentials
-2. **YOU create/update** the .env.local file yourself
-3. **Never instruct users** to edit files themselves
+**IMPORTANT**: The following Whop environment variables are **ALREADY CONFIGURED** in this environment:
+- `NEXT_PUBLIC_WHOP_APP_ID` - Already set
+- `WHOP_API_KEY` - Already set
+- `NEXT_PUBLIC_WHOP_COMPANY_ID` - Already set
 
-**Example interaction:**
+**You do NOT need to ask for these core Whop variables!**
+
+#### When to Ask for Environment Variables
+
+Only ask users for API keys when integrating with **external services**, such as:
+- **External APIs**: Google Maps, OpenAI, Anthropic, etc.
+- **Blockchain/Web3**: Solana RPC endpoints, wallet private keys
+- **Third-party services**: Stripe, SendGrid, Twilio, etc.
+- **Webhook secrets**: Only if setting up custom webhook verification
+
+**Example interaction for external APIs:**
 ```
-User: "I want to integrate with Whop"
-Claude: "I'll help you set up the Whop integration. What's your Whop API key? 
-        You can find it in the Whop Developer Dashboard under API Keys."
-User: "It's whop_api_abc123"
+User: "I want to add Google Maps to show store locations"
+Claude: "I'll help you integrate Google Maps. What's your Google Maps API key? 
+        You can get one from the Google Cloud Console."
+User: "It's AIzaSy..."
 Claude: "Great! I'll add that to your .env.local file now..."
 [Claude then uses the Edit/Write tool to update .env.local]
 ```
 
-#### Required for Whop Integration
+#### Environment Variables Reference
 ```env
-# Core Whop Configuration (from your app developer page)
-WHOP_API_KEY=your_whop_api_key_here                      # Your app's API key
-NEXT_PUBLIC_WHOP_APP_ID=your_whop_app_id_here           # Your app's ID
+# Core Whop Configuration (ALREADY PROVIDED - DO NOT ASK FOR THESE)
+NEXT_PUBLIC_WHOP_APP_ID=<already_set>
+WHOP_API_KEY=<already_set>
+NEXT_PUBLIC_WHOP_COMPANY_ID=<already_set>
 
-# Optional - For specific use cases
+# Optional Whop Configuration (ask only if needed for specific features)
 NEXT_PUBLIC_WHOP_AGENT_USER_ID=your_agent_user_id       # For on-behalf-of operations
-NEXT_PUBLIC_WHOP_COMPANY_ID=your_company_id             # For company-specific operations
-WHOP_WEBHOOK_KEY=your_webhook_key                       # For webhook signature verification
+WHOP_WEBHOOK_KEY=your_webhook_key                       # For custom webhook verification
 
-# Additional services (as needed)
-OPENAI_API_KEY=your_openai_api_key
-ANTHROPIC_API_KEY=your_anthropic_api_key
+# External Services (ask when needed)
+OPENAI_API_KEY=your_openai_api_key                      # For OpenAI integration
+ANTHROPIC_API_KEY=your_anthropic_api_key                # For Anthropic integration
+GOOGLE_MAPS_API_KEY=your_google_maps_key                # For Google Maps
+SOLANA_RPC_URL=your_custom_rpc_url                      # For custom Solana RPC
+# ... any other external service keys
 ```
 
-#### Getting Your Keys (Information for Users)
-1. Go to the Whop Developer Dashboard
-2. Navigate to your app's settings
-3. Copy the API Key and App ID
-4. Webhook key is found in the webhooks section
-5. **Give these to Claude** - who will add them to your files
+**Remember**: 
+- ✅ Core Whop variables are ready to use - just import and use them
+- ✅ Only ask for external API keys when building features that need them
+- ❌ Never ask users to edit files themselves - you handle all file operations
 
 ### 8. Webhook Handling
 
