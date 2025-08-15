@@ -17,8 +17,7 @@ const nextConfig: NextConfig = {
 	},
 	logging: {
 		fetches: {
-			fullUrl: true,
-	    		hmrRefreshes: true,
+			fullUrl: false,
 		},
   	},
 	devIndicators: false,
