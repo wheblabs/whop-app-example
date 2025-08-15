@@ -5,8 +5,8 @@ output=$(bun run lint 2>&1)
 
 # Check if output contains "error" (case insensitive)
 if echo "$output" | grep -qi "error"; then
-  # Found errors - show full output and exit with code 2
-  echo "$output"
+  # Found errors - show full output to stderr and exit with code 2
+  echo "$output" >&2
   exit 2
 else
   # No errors found - show output and exit with code 0
