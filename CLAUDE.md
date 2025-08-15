@@ -568,7 +568,21 @@ const userInfo = await whopSdk.withUser(userId).users.retrieveUser({
 });
 ```
 
-#### Basic Setup (`lib/whop-api.ts`)
+#### ✅ Whop API Setup - ALREADY CONFIGURED!
+
+**IMPORTANT**: The basic Whop API setup is **ALREADY CONFIGURED** in `lib/whop-api.ts`:
+- ✅ `whopSdk` - Already exported and ready to use
+- ✅ `verifyUserToken` - Already exported and ready to use
+- ✅ All required environment variables are set up
+
+**You do NOT need to create or set up the Whop API client!** Simply import and use it:
+
+```typescript
+// Just import and use - it's already set up!
+import { verifyUserToken, whopSdk } from "@/lib/whop-api";
+```
+
+The existing setup in `lib/whop-api.ts` includes:
 ```typescript
 import { WhopServerSdk, makeUserTokenVerifier } from "@whop/api";
 
