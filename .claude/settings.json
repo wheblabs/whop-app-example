@@ -23,14 +23,10 @@
     ]
   },
   "hooks": {
-    "Stop": [
+    "PostToolUse": [
       {
-        "matcher": "",
+        "matcher": "Write|Edit|MultiEdit",
         "hooks": [
-          {
-            "type": "command",
-            "command": "bash ./strict-lint.sh"
-          },
           {
             "type": "command",
             "command": "bun run tsc --noEmit --incremental --tsBuildInfoFile .tsbuildinfo"
