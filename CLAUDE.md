@@ -607,7 +607,7 @@ import { verifyUserToken } from "@/lib/whop-api";
 
 export default async function Page() {
   const headersList = await headers();
-  const { userId } = await verifyUserToken(headersList);
+  const { userId } = await whopSdk.verifyUserToken(headersList);
   
   // User is authenticated - now get their real data
   return <div>Welcome {userId}</div>;
