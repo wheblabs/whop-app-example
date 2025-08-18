@@ -36,7 +36,3 @@ export const whopSdk = WhopServerSdk({
   companyId: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID,
 });
 
-export const verifyUserToken = makeUserTokenVerifier({
-  appId: process.env.NEXT_PUBLIC_WHOP_APP_ID ?? "fallback",
-  dontThrow: true,
-});

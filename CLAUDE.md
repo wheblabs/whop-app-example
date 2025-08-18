@@ -350,12 +350,12 @@ const mockSuggestions = ["Suggestion 1", "Suggestion 2"];
 **Example - RIGHT (Always do this):**
 ```typescript
 // ✅ ALWAYS use real data from Whop SDK
-import { verifyUserToken, whopSdk } from "@/lib/whop-api";
+import { whopSdk } from "@/lib/whop-api";
 import { headers } from "next/headers";
 
 // Get the actual logged-in user
 const headersList = await headers();
-const { userId } = await verifyUserToken(headersList);
+const { userId } = await whopSdk.verifyUserToken(headersList);
 
 // Get real user information from Whop
 // ⚠️ IMPORTANT: Do NOT use whopSdk.users.getCurrentUser() - it's broken!
@@ -572,14 +572,13 @@ const userInfo = await whopSdk.withUser(userId).users.retrieveUser({
 
 **IMPORTANT**: The basic Whop API setup is **ALREADY CONFIGURED** in `lib/whop-api.ts`:
 - ✅ `whopSdk` - Already exported and ready to use
-- ✅ `verifyUserToken` - Already exported and ready to use
 - ✅ All required environment variables are set up
 
 **You do NOT need to create or set up the Whop API client!** Simply import and use it:
 
 ```typescript
 // Just import and use - it's already set up!
-import { verifyUserToken, whopSdk } from "@/lib/whop-api";
+import { whopSdk } from "@/lib/whop-api";
 ```
 
 The existing setup in `lib/whop-api.ts` includes:
@@ -593,10 +592,6 @@ export const whopSdk = WhopServerSdk({
   companyId: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID,
 });
 
-export const verifyUserToken = makeUserTokenVerifier({
-  appId: process.env.NEXT_PUBLIC_WHOP_APP_ID,
-  dontThrow: true,
-});
 ```
 
 ### 5. Authentication Pattern
