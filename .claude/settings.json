@@ -21,18 +21,5 @@
       "Bash(curl:*)",
       "Bash(wget:*)"
     ]
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun run tsc --noEmit --incremental --tsBuildInfoFile .tsbuildinfo"
-          }
-        ]
-      }
-    ]
   }
 }
