@@ -1,41 +1,42 @@
 {
-	"name": "whop-nextjs-app-template",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "whop-proxy --command 'next dev --turbopack --hostname 0.0.0.0'",
-		"build": "next build",
-		"start": "next start",
-		"lint": "next lint",
-		"db:generate": "prisma generate",
-		"db:push": "prisma db push",
-		"db:studio": "prisma studio"
-	},
-	"dependencies": {
-		"@next/env": "^15.4.5",
-		"@prisma/client": "^6.2.0",
-		"@vercel/functions": "^2.0.3",
-		"@whop-apps/sdk": "0.0.1-canary.111",
-		"@whop/api": "^0.0.42",
-		"@whop/react": "^0.2.34",
-		"lucide-react": "0.518.0",
-		"next": "^15.4.7",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
-		"recharts": "^2.15.3",
-		"styled-components": "^6.1.19"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@types/node": "^20",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
-		"@whop-apps/dev-proxy": "0.0.1-canary.116",
-		"dotenv-cli": "^8.0.0",
-		"eslint": "^9",
-		"eslint-config-next": "15.4.6",
-		"prisma": "^6.2.0",
-		"typescript": "^5"
-	},
-	"packageManager": "pnpm@8.7.0+sha512.1d61f8c10e8a5a5dbfbddea0f1f5efb7dbd5177223073aec953cf230aa46416884b9427a6421dba78f28ad0f93fbede38ba57083237b350243de6b1e3a8ce71d"
+  "name": "whop-nextjs-app-template",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "whop-proxy --command 'next dev --turbopack --hostname 0.0.0.0'",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@next/env": "^15.4.5",
+    "@prisma/client": "^6.2.0",
+    "@vercel/functions": "^2.0.3",
+    "@whop-apps/sdk": "0.0.1-canary.111",
+    "@whop/api": "^0.0.42",
+    "@whop/react": "^0.2.34",
+    "lucide-react": "0.518.0",
+    "next": "^15.4.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.3",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@whop-apps/dev-proxy": "0.0.1-canary.116",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.6",
+    "prisma": "^6.2.0",
+    "typescript": "^5",
+    "@eslint/eslintrc": "^3"
+  },
+  "packageManager": "pnpm@8.7.0+sha512.1d61f8c10e8a5a5dbfbddea0f1f5efb7dbd5177223073aec953cf230aa46416884b9427a6421dba78f28ad0f93fbede38ba57083237b350243de6b1e3a8ce71d"
 }
