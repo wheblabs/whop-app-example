@@ -6,7 +6,7 @@ This file contains the complete official Whop SDK documentation from https://dev
 
 ### Broken Methods - DO NOT USE
 1. **`whopSdk.users.getCurrentUser()`** - Currently broken, returns errors
-   - **Alternative**: Use `whopSdk.withUser(userId).users.retrieveUser({ id: userId })` instead
+   - **Alternative**: Use `whopSdk.users.getUser({ userId: userId })` instead
    - Always get the userId first using `verifyUserToken(headers)`
 
 **To update this documentation:**

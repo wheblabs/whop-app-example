@@ -413,8 +413,8 @@ const headersList = await headers();
 const { userId } = await whopSdk.verifyUserToken(headersList);
 
 // Get real user information from Whop SDK
-const userInfo = await whopSdk.withUser(userId).users.retrieveUser({ 
-  id: userId 
+const userInfo = await whopSdk.users.getUser({ 
+  userId: userId 
 });
 const userName = userInfo.data?.username || userInfo.data?.email;
 
@@ -634,8 +634,8 @@ const StatusBadge = styled.span<{ $status: 'success' | 'warning' | 'error' }>`
 **USE INSTEAD**: 
 ```typescript
 // After getting userId from verifyUserToken
-const userInfo = await whopSdk.withUser(userId).users.retrieveUser({ 
-  id: userId 
+const userInfo = await whopSdk.users.getUser({ 
+  userId: userId 
 });
 ```
 
