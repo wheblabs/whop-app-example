@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "whop-proxy --command 'next dev --turbopack --hostname 0.0.0.0'",
+    "dev": "whop-proxy --command 'next dev --turbopack -H ::'",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
