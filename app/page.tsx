@@ -17,7 +17,7 @@ export default function Page() {
 }
 
 const Container = styled.div`
-	background-color: #141414;
+	background-color: var(--color-background-primary);
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
@@ -34,6 +34,6 @@ const Content = styled.div`
 
 const Description = styled.p`
 	font-size: 1.125rem; /* 18px */
-	color: #5b5b5b; /* gray-600 */
+	color: var(--color-text-secondary);
 	width: 80%;
 `;
