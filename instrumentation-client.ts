@@ -1,8 +1,8 @@
 import posthog from "posthog-js";
 
 // Only initialize PostHog on the client side to prevent hydration mismatches
-if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+if (typeof window !== 'undefined') {
+  posthog.init('phc_HuKOvMVttJo3YtzWcwlqnYwMKBiB1UCMTL5d59JvbmW', {
     api_host: "/ingest",
     ui_host: "https://us.posthog.com",
     capture_pageview: false, // Disable automatic pageview capture to prevent hydration issues
