@@ -21,7 +21,19 @@ const nextConfig: NextConfig = {
 			fullUrl: false,
 		},
 	},
-	devIndicators: false,
+	devIndicators: {
+		buildActivity: false,
+		buildActivityPosition: 'bottom-right',
+	},
+	onDemandEntries: {
+		maxInactiveAge: 25 * 1000,
+		pagesBufferLength: 2,
+	},
+	experimental: {
+		logging: {
+			level: 'error',
+		},
+	},
 	images: {
 		remotePatterns: [{ hostname: "**" }],
 	},
