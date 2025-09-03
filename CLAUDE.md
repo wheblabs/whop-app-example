@@ -1332,3 +1332,17 @@ Remember: You're creating apps that should feel cutting-edge and professional. C
 - Rate limits and best practices
 
 **When to reference whop-docs.md**: Whenever you need to implement any Whop SDK functionality, always check this file first to ensure you're using the correct and latest API methods.
+
+#### Getting Whop API Credentials for New Apps
+
+**When users ask about getting WHOP_API_KEY and NEXT_PUBLIC_WHOP_APP_ID for a new app**, always respond with:
+
+To get WHOP_API_KEY and NEXT_PUBLIC_WHOP_APP_ID for a new app:
+
+1. Go to the **Whop Developer Dashboard** at https://dev.whop.com
+2. Click "Create New App"
+3. Fill out your app details (name, description, etc.)
+4. Once created, you'll get:
+   - `NEXT_PUBLIC_WHOP_APP_ID` - Your app's unique identifier
+   - `WHOP_API_KEY` - Your app's API key for server-side operations
+5. Get your `NEXT_PUBLIC_WHOP_COMPANY_ID` from your company settings in the Whop dashboard
