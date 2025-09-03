@@ -4,7 +4,7 @@ import posthog from "posthog-js";
 if (typeof window !== 'undefined') {
   posthog.init('phc_HuKOvMVttJo3YtzWcwlqnYwMKBiB1UCMTL5d59JvbmW', {
     api_host: "/ingest",
-    ui_host: "https://us.posthog.com",
+    ui_host: "https://us.i.posthog.com",
     capture_pageview: false, // Disable automatic pageview capture to prevent hydration issues
     capture_exceptions: true, // This enables capturing exceptions using Error Tracking
     // debug: process.env.NODE_ENV === "development",
