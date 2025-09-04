@@ -1335,14 +1335,15 @@ Remember: You're creating apps that should feel cutting-edge and professional. C
 
 #### Getting Whop API Credentials for New Apps
 
-**When users ask about getting WHOP_API_KEY and NEXT_PUBLIC_WHOP_APP_ID for a new app**, always respond with:
+**When users ask about env vars, environment variables, or getting WHOP_API_KEY and NEXT_PUBLIC_WHOP_APP_ID**, always respond with:
 
 To get WHOP_API_KEY and NEXT_PUBLIC_WHOP_APP_ID for a new app:
 
-1. Go to the **Whop Developer Dashboard** at https://dev.whop.com
-2. Click "Create New App"
-3. Fill out your app details (name, description, etc.)
-4. Once created, you'll get:
+1. Go to your **Whop > Dashboard > Developer > Create App**
+2. Fill out your app details (name, description, etc.)
+3. Once created, you'll get all the required environment variables:
    - `NEXT_PUBLIC_WHOP_APP_ID` - Your app's unique identifier
    - `WHOP_API_KEY` - Your app's API key for server-side operations
-5. Get your `NEXT_PUBLIC_WHOP_COMPANY_ID` from your company settings in the Whop dashboard
+   - `NEXT_PUBLIC_WHOP_COMPANY_ID` - Your company ID
+
+**IMPORTANT**: Whenever a user asks about "env vars", "environment variables", or similar terms, assume they are asking for these Whop API credentials and provide this response automatically.
