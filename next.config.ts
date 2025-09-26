@@ -6,6 +6,7 @@ const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
 const nextConfig: NextConfig = {
+	distDir: 'build',
 	allowedDevOrigins: ["*"],
 	env: {
 		WHOP_API_KEY: process.env.WHOP_API_KEY || '',
