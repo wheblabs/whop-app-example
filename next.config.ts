@@ -29,11 +29,6 @@ const nextConfig: NextConfig = {
 		maxInactiveAge: 25 * 1000,
 		pagesBufferLength: 2,
 	},
-	experimental: {
-		logging: {
-			level: 'error',
-		},
-	},
 	images: {
 		remotePatterns: [{ hostname: "**" }],
 	},
