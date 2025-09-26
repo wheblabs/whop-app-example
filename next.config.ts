@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
 		},
 	},
 	devIndicators: false,
+	// Disable verbose HMR logging that causes object dumps
+	webpack: (config, { dev }) => {
+		if (dev) {
+			config.devServer = {
+				...config.devServer,
+				client: {
+					logging: 'warn', // Only show warnings and errors, not verbose info
+				},
+			};
+		}
+		return config;
+	},
 	onDemandEntries: {
 		maxInactiveAge: 25 * 1000,
 		pagesBufferLength: 2,
