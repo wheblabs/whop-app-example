@@ -21,10 +21,7 @@ const nextConfig: NextConfig = {
 			fullUrl: false,
 		},
 	},
-	devIndicators: {
-		buildActivity: false,
-		buildActivityPosition: 'bottom-right',
-	},
+	devIndicators: false,
 	onDemandEntries: {
 		maxInactiveAge: 25 * 1000,
 		pagesBufferLength: 2,
