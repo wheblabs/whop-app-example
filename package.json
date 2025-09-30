@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "whop-proxy --command 'next dev --turbopack -H ::'",
-    "build": "NEXT_BUILD_MODE=true next build --turbopack",
+    "build:test": "NEXT_BUILD_MODE=true next build --turbopack",
+	 "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint .",
     "db:generate": "prisma generate",
