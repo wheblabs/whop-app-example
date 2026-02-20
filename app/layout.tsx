@@ -1,5 +1,4 @@
-import { WhopIframeSdkProvider, WhopThemeScript } from "@whop/react";
-import { Theme } from "@whop/react/components";
+import { WhopApp } from "@whop/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -19,13 +18,6 @@ export const metadata: Metadata = {
 	description: "My Whop App",
 };
 
-// Check if we have the required Whop environment variables
-const hasWhopConfig = !!(
-	process.env.WHOP_API_KEY && 
-	process.env.NEXT_PUBLIC_WHOP_APP_ID && 
-	process.env.WHOP_API_KEY !== "fallback"
-);
-
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -33,19 +25,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<head>
-				<WhopThemeScript />
-			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<Theme>
-					{hasWhopConfig ? (
-						<WhopIframeSdkProvider>{children}</WhopIframeSdkProvider>
-					) : (
-						children
-					)}
-				</Theme>
+				<WhopApp accentColor="blue" appearance="inherit">
+					{children}
+				</WhopApp>
 			</body>
 		</html>
 	);
