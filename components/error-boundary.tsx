@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import styled from "styled-components";
 
 export class ErrorBoundary extends React.Component<
 	{
@@ -41,15 +40,8 @@ export class ErrorBoundary extends React.Component<
 
 export function ErrorFallback({ errorMessage }: { errorMessage: string }) {
 	return (
-		<ErrorContainer>
+		<div className="bg-red-500/20 text-red-500 p-3 rounded-lg">
 			Error: {errorMessage}
-		</ErrorContainer>
+		</div>
 	);
 }
-
-const ErrorContainer = styled.div`
-	background-color: rgba(239, 68, 68, 0.2); /* red-500/20 */
-	color: #ef4444; /* red-500 */
-	padding: 0.75rem;
-	border-radius: 0.5rem;
-`;

@@ -14,9 +14,6 @@ const nextConfig: NextConfig = {
 		NEXT_PUBLIC_WHOP_AGENT_USER_ID: process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID || '',
 		NEXT_PUBLIC_WHOP_COMPANY_ID: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID || '',
 	},
-	compiler: {
-		styledComponents: true,
-	},
 	logging: {
 		fetches: {
 			fullUrl: false,
