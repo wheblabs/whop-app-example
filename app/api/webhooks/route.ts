@@ -1,5 +1,17 @@
 import type { NextRequest } from "next/server";
 
+type WebhookPayload = {
+	action: string;
+	data: {
+		id: string;
+		final_amount: number;
+		amount_after_fees: number | null | undefined;
+		currency: string;
+		user_id: string | null | undefined;
+		[key: string]: unknown;
+	};
+};
+
 async function verifyWebhookSignature(request: NextRequest): Promise<unknown> {
 	const secret = process.env.WHOP_WEBHOOK_SECRET;
 	if (!secret) throw new Error("WHOP_WEBHOOK_SECRET not set");
@@ -25,9 +37,9 @@ async function verifyWebhookSignature(request: NextRequest): Promise<unknown> {
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
-	let webhookData: any;
+	let webhookData: WebhookPayload;
 	try {
-		webhookData = await verifyWebhookSignature(request);
+		webhookData = await verifyWebhookSignature(request) as WebhookPayload;
 	} catch {
 		return new Response("Unauthorized", { status: 401 });
 	}
