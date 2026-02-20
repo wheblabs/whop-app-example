@@ -1,5 +1,6 @@
 import { WhopApp } from "@whop/react/components";
 import type { Metadata } from "next";
+import "frosted-ui/styles.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
