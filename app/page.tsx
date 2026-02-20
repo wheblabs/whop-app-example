@@ -1,6 +1,6 @@
 "use client";
 
-import { Heading, Text, Spinner } from "@whop/react";
+import { Heading, Text, Spinner } from "@whop/react/components";
 import styled from "styled-components";
 
 const Center = styled.div`

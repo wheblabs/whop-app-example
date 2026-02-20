@@ -1,4 +1,4 @@
-import { WhopApp } from "@whop/react";
+import { WhopApp } from "@whop/react/components";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";

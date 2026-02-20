@@ -1,15 +1,13 @@
-import { WhopServerSdk } from "@whop/api";
+import Whop from "@whop/sdk";
 
 function createSdk() {
-	if (!process.env.WHOP_API_KEY || !process.env.NEXT_PUBLIC_WHOP_APP_ID) {
+	if (!process.env.WHOP_API_KEY) {
 		return null;
 	}
 
-	return WhopServerSdk({
-		appId: process.env.NEXT_PUBLIC_WHOP_APP_ID,
-		appApiKey: process.env.WHOP_API_KEY,
-		onBehalfOfUserId: process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID,
-		companyId: process.env.NEXT_PUBLIC_WHOP_COMPANY_ID,
+	return new Whop({
+		apiKey: process.env.WHOP_API_KEY,
+		appID: process.env.NEXT_PUBLIC_WHOP_APP_ID,
 	});
 }
 

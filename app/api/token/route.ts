@@ -1,4 +1,5 @@
 import { whopSdk } from "@/lib/whop-api";
+import { verifyUserToken } from "@whop/sdk/lib/verify-user-token";
 import { headers } from "next/headers";
 
 /**
@@ -15,11 +16,11 @@ export async function GET() {
 	}
 
 	const headersList = await headers();
-	const { userId } = await whopSdk.verifyUserToken(headersList);
-
-	const token = await whopSdk.accessTokens.create({
-		userId,
+	const { userId } = await verifyUserToken(headersList, {
+		appId: process.env.NEXT_PUBLIC_WHOP_APP_ID ?? "",
 	});
+
+	const token = await whopSdk.accessTokens.create({ user_id: userId });
 
 	return Response.json({ token: token.token });
 }

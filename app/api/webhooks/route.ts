@@ -1,35 +1,50 @@
-import { waitUntil } from "@vercel/functions";
-import { makeWebhookValidator } from "@whop/api";
 import type { NextRequest } from "next/server";
 
-const validateWebhook = makeWebhookValidator({
-	webhookSecret: process.env.WHOP_WEBHOOK_SECRET ?? "fallback",
-});
+async function verifyWebhookSignature(request: NextRequest): Promise<unknown> {
+	const secret = process.env.WHOP_WEBHOOK_SECRET;
+	if (!secret) throw new Error("WHOP_WEBHOOK_SECRET not set");
+
+	const signature = request.headers.get("x-whop-signature");
+	if (!signature) throw new Error("Missing x-whop-signature header");
+
+	const body = await request.text();
+	const key = await crypto.subtle.importKey(
+		"raw",
+		new TextEncoder().encode(secret),
+		{ name: "HMAC", hash: "SHA-256" },
+		false,
+		["verify"],
+	);
+	const sig = Uint8Array.from(
+		signature.replace(/^sha256=/, "").match(/.{2}/g)!.map((b) => parseInt(b, 16)),
+	);
+	const valid = await crypto.subtle.verify("HMAC", key, sig, new TextEncoder().encode(body));
+	if (!valid) throw new Error("Invalid webhook signature");
+
+	return JSON.parse(body);
+}
 
 export async function POST(request: NextRequest): Promise<Response> {
-	// Validate the webhook to ensure it's from Whop
-	const webhookData = await validateWebhook(request);
+	let webhookData: any;
+	try {
+		webhookData = await verifyWebhookSignature(request);
+	} catch {
+		return new Response("Unauthorized", { status: 401 });
+	}
 
 	// Handle the webhook event
 	if (webhookData.action === "payment.succeeded") {
-		const { id, final_amount, amount_after_fees, currency, user_id } =
-			webhookData.data;
+		const { id, final_amount, amount_after_fees, currency, user_id } = webhookData.data;
 
 		// final_amount is the amount the user paid
-		// amount_after_fees is the amount that is received by you, after card fees and processing fees are taken out
-
+		// amount_after_fees is the amount received after card fees
 		console.log(
 			`Payment ${id} succeeded for ${user_id} with amount ${final_amount} ${currency}`,
 		);
 
-		// if you need to do work that takes a long time, use waitUntil to run it in the background
-		waitUntil(
-			potentiallyLongRunningHandler(
-				user_id,
-				final_amount,
-				currency,
-				amount_after_fees,
-			),
+		// if you need to do work that takes a long time, run it in the background
+		potentiallyLongRunningHandler(user_id, final_amount, currency, amount_after_fees).catch(
+			console.error,
 		);
 	}
 
