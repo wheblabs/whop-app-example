@@ -2,21 +2,12 @@
 @source "../app/**/*.{ts,tsx}";
 @source "../components/**/*.{ts,tsx}";
 
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
-
 html,
 body {
 	height: 100%;
 }
 
 body {
-	margin: 0;
-	padding: 0;
 	background: var(--color-background-primary);
 	color: var(--color-text-primary);
-	font-family: system-ui, -apple-system, sans-serif;
 }
